@@ -1,0 +1,16 @@
+// src/app/api/flows/route.ts
+import { NextResponse } from "next/server";
+import { getFlows } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const hours = Number(searchParams.get("hours") ?? "24");
+  // device_id könntest du später auswerten und in getFlows integrieren
+  // const deviceId = searchParams.get("device_id") ?? undefined;
+
+  const flows = await getFlows(hours);
+  return NextResponse.json(flows);
+}
+

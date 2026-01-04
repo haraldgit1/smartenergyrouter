@@ -1,0 +1,529 @@
+
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <title>Smart Energy Router – Optimizer Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #0b1120;
+      color: #e5e7eb;
+    }
+    body {
+      margin: 0;
+      padding: 1rem 1.5rem 2.5rem 1.5rem;
+      background: radial-gradient(circle at top left, #1d2437 0, #020617 55%);
+      min-height: 100vh;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    h2 {
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin: 0.75rem 0 0.25rem 0;
+    }
+    .subtitle {
+      color: #9ca3af;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.9);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #e5e7eb;
+    }
+    .badge span.dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34,197,94,0.9);
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.2fr);
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+    .card {
+      border-radius: 0.9rem;
+      border: 1px solid rgba(148,163,184,0.25);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.9));
+      box-shadow: 0 18px 45px rgba(15,23,42,0.85);
+      padding: 0.9rem 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 55%);
+      pointer-events: none;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 0.1rem;
+    }
+    .pill {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+    .content {
+      position: relative;
+      z-index: 1;
+    }
+    .json-view {
+      margin-top: 0.4rem;
+      border-radius: 0.6rem;
+      background: rgba(15,23,42,0.95);
+      border: 1px solid rgba(30,64,175,0.6);
+      padding: 0.5rem 0.6rem;
+      max-height: 320px;
+      overflow: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.75rem;
+      line-height: 1.25;
+      color: #e5e7eb;
+    }
+    .json-view.error {
+      border-color: rgba(248,113,113,0.8);
+      background: rgba(127,29,29,0.9);
+    }
+    .json-view .placeholder {
+      color: #6b7280;
+      font-style: italic;
+    }
+    .meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 0.3rem;
+      font-size: 0.7rem;
+      color: #9ca3af;
+    }
+    .meta span {
+      white-space: nowrap;
+    }
+    .meta .status-ok {
+      color: #4ade80;
+    }
+    .meta .status-bad {
+      color: #f97373;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-top: 0.6rem;
+    }
+    .btn {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.85);
+      color: #e5e7eb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .btn:hover {
+      border-color: rgba(59,130,246,0.8);
+      box-shadow: 0 0 14px rgba(37,99,235,0.6);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+    }
+    .toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+    .toggle input {
+      accent-color: #3b82f6;
+    }
+    .flow-list {
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      margin-top: 0.4rem;
+      list-style: none;
+      padding-left: 0.9rem;
+    }
+    .flow-list li {
+      margin-bottom: 0.25rem;
+      position: relative;
+    }
+    .flow-list li::before {
+      content: "→";
+      position: absolute;
+      left: -0.9rem;
+      color: #60a5fa;
+    }
+    .flow-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #9ca3af;
+      margin-bottom: 0.1rem;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.3rem;
+    }
+    .chip {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.3);
+      background: rgba(15,23,42,0.9);
+      color: #e5e7eb;
+      white-space: nowrap;
+    }
+    .chip span.tag {
+      text-transform: uppercase;
+      color: #60a5fa;
+      font-size: 0.65rem;
+      margin-right: 0.18rem;
+    }
+    code {
+      font-family: inherit;
+      font-size: 0.78rem;
+      background: rgba(15,23,42,0.85);
+      padding: 0.1rem 0.35rem;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(30,64,175,0.6);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badge">
+      <span class="dot"></span>
+      <span>Optimizer</span>
+      <span>Smart Energy Router</span>
+    </div>
+    <h1>UseCases & Flows – Optimizer</h1>
+    <p class="subtitle">
+      Überblick über Health, Queues, Forecast → Optimize → Schedule → Router-Agent Flows.
+    </p>
+  </header>
+
+  <section class="layout">
+    <!-- Linke Seite: JSON-Infos / Live-Status -->
+    <div class="stack">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Service & Queues</div>
+            <div class="card-subtitle">Health-Check & RabbitMQ / Worker-Status aus dem Optimizer.</div>
+          </div>
+          <span class="pill">Core Status</span>
+        </div>
+        <div class="content">
+          <div class="controls">
+            <button class="btn" id="btn-refresh-core">
+              &#x21bb;
+              <span>Jetzt aktualisieren</span>
+            </button>
+            <label class="toggle">
+              <input type="checkbox" id="toggle-autorefresh" checked />
+              <span>Auto-Refresh (5 s)</span>
+            </label>
+            <span id="core-last-updated"></span>
+          </div>
+          <h2>Health</h2>
+          <div id="view-health" class="json-view">
+            <div class="placeholder">Lade <code>/health</code> …</div>
+          </div>
+
+          <h2>Queues</h2>
+          <div id="view-queues" class="json-view">
+            <div class="placeholder">Lade <code>/info/queues</code> …</div>
+          </div>
+
+          <div class="meta">
+            <span>Endpunkte: <code>/health</code>, <code>/info/queues</code></span>
+            <span id="core-status-text" class="status-ok">Status: unbekannt</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:0.9rem;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Schedules & Setpoints (Optimizer-Sicht)</div>
+            <div class="card-subtitle">
+              Geplante Zeitfenster je Gerät & letzte Routing-Setpoints.
+            </div>
+          </div>
+          <span class="pill">Planning Output</span>
+        </div>
+        <div class="content">
+          <div class="controls">
+            <button class="btn" id="btn-refresh-planning">
+              &#x21bb;
+              <span>Reload Planning</span>
+            </button>
+            <span id="planning-last-updated"></span>
+          </div>
+
+          <h2>Schedules</h2>
+          <div id="view-schedules" class="json-view">
+            <div class="placeholder">Lade <code>/info/schedules</code> …</div>
+          </div>
+
+          <h2>Setpoints</h2>
+          <div id="view-setpoints" class="json-view">
+            <div class="placeholder">Lade <code>/info/setpoints</code> …</div>
+          </div>
+
+          <div class="meta">
+            <span>Endpunkte: <code>/info/schedules</code>, <code>/info/setpoints</code></span>
+            <span id="planning-status-text" class="status-ok">Status: unbekannt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rechte Seite: UseCases & Flows -->
+    <aside class="stack">
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">UseCase-Flow – Überblick</div>
+            <div class="card-subtitle">
+              Hohe Ebene der Data-&amp;Energy-Flows für den Optimizer.
+            </div>
+          </div>
+          <span class="pill">Flow Map</span>
+        </div>
+        <div class="content">
+          <div class="flow-label">Standard-Flow (Day-Ahead / Intraday)</div>
+          <ul class="flow-list">
+            <li><strong>Forecast</strong> wird vom Predictor generiert und in <code>forecasts.out</code> publiziert.</li>
+            <li><strong>Optimizer</strong> konsumiert Forecast &amp; Gerätekonfiguration, erstellt Schedules.</li>
+            <li><strong>Schedules</strong> werden an Router-Agent weitergegeben / persistiert.</li>
+            <li><strong>Router-Agent</strong> setzt Setpoints auf Geräte / Backend durch.</li>
+            <li><strong>Monitoring</strong> schreibt Messwerte in TimescaleDB / Logging.</li>
+          </ul>
+
+          <div class="flow-label" style="margin-top:0.65rem;">UseCases (Konfiguration)</div>
+          <div class="chip-row" id="usecase-chips">
+            <div class="chip"><span class="tag">PFB</span>Price-Follow Boiler</div>
+            <div class="chip"><span class="tag">EV</span>Smart EV Charging</div>
+            <div class="chip"><span class="tag">BAT</span>PV-Überschuss → Batterie</div>
+          </div>
+
+          <h2>UseCases (aus /info/usecases)</h2>
+          <div id="view-usecases" class="json-view">
+            <div class="placeholder">
+              Optional: hier werden <code>/info/usecases</code>-Daten angezeigt, falls der Endpunkt existiert.
+            </div>
+          </div>
+
+          <div class="meta">
+            <span>Endpunkt: <code>/info/usecases</code> (optional)</span>
+            <span id="usecases-status-text" class="status-ok">Status: unbekannt</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <script>
+    const panels = {
+      health: {
+        url: "/health",
+        elementId: "view-health",
+        statusId: "core-status-text",
+        lastUpdatedId: "core-last-updated"
+      },
+      queues: {
+        url: "/info/queues",
+        elementId: "view-queues",
+        statusId: "core-status-text"
+      },
+      schedules: {
+        url: "/info/schedules",
+        elementId: "view-schedules",
+        statusId: "planning-status-text",
+        lastUpdatedId: "planning-last-updated"
+      },
+      setpoints: {
+        url: "/info/setpoints",
+        elementId: "view-setpoints",
+        statusId: "planning-status-text"
+      },
+      usecases: {
+        url: "/info/usecases",
+        elementId: "view-usecases",
+        statusId: "usecases-status-text"
+      }
+    };
+
+    function formatTimestamp(date) {
+      const d = date instanceof Date ? date : new Date(date);
+      return d.toLocaleTimeString("de-AT", { hour12: false });
+    }
+
+    async function fetchPanel(key) {
+      const panel = panels[key];
+      if (!panel) return;
+
+      const view = document.getElementById(panel.elementId);
+      const statusEl = panel.statusId ? document.getElementById(panel.statusId) : null;
+      const lastUpdatedEl = panel.lastUpdatedId ? document.getElementById(panel.lastUpdatedId) : null;
+
+      if (!view) return;
+
+      try {
+        const res = await fetch(panel.url, { cache: "no-store" });
+
+        if (!res.ok) {
+          throw new Error("HTTP " + res.status);
+        }
+
+        const contentType = res.headers.get("content-type") || "";
+        let data;
+
+        if (contentType.includes("application/json")) {
+          data = await res.json();
+        } else {
+          data = await res.text();
+        }
+
+        view.classList.remove("error");
+
+        const pretty = typeof data === "string"
+          ? data
+          : JSON.stringify(data, null, 2);
+
+        view.innerHTML = "<pre>" + pretty.replace(/[&<>]/g, function (c) {
+          return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[c];
+        }) + "</pre>";
+
+        if (statusEl) {
+          statusEl.textContent = "Status: ok (" + key + ")";
+          statusEl.classList.remove("status-bad");
+          statusEl.classList.add("status-ok");
+        }
+        if (lastUpdatedEl) {
+          lastUpdatedEl.textContent = "Aktualisiert: " + formatTimestamp(new Date());
+        }
+      } catch (err) {
+        view.classList.add("error");
+        view.innerHTML = "<div>Fehler beim Laden von <code>" + panel.url +
+          "</code><br/><small>" + String(err) + "</small></div>";
+        if (statusEl) {
+          statusEl.textContent = "Status: Fehler (" + key + ")";
+          statusEl.classList.remove("status-ok");
+          statusEl.classList.add("status-bad");
+        }
+      }
+    }
+
+    function refreshCore() {
+      fetchPanel("health");
+      fetchPanel("queues");
+    }
+
+    function refreshPlanning() {
+      fetchPanel("schedules");
+      fetchPanel("setpoints");
+      fetchPanel("usecases");
+    }
+
+    let intervalId = null;
+    function setupAutoRefresh() {
+      const toggle = document.getElementById("toggle-autorefresh");
+      if (!toggle) return;
+
+      const updateInterval = () => {
+        if (intervalId) {
+          clearInterval(intervalId);
+          intervalId = null;
+        }
+        if (toggle.checked) {
+          intervalId = setInterval(() => {
+            refreshCore();
+            refreshPlanning();
+          }, 5000);
+        }
+      };
+
+      toggle.addEventListener("change", updateInterval);
+      updateInterval();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnCore = document.getElementById("btn-refresh-core");
+      const btnPlanning = document.getElementById("btn-refresh-planning");
+
+      if (btnCore) {
+        btnCore.addEventListener("click", () => {
+          refreshCore();
+        });
+      }
+      if (btnPlanning) {
+        btnPlanning.addEventListener("click", () => {
+          refreshPlanning();
+        });
+      }
+
+      // initial load
+      refreshCore();
+      refreshPlanning();
+      setupAutoRefresh();
+    });
+  </script>
+</body>
+</html>

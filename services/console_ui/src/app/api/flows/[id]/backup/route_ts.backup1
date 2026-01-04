@@ -1,0 +1,24 @@
+// src/app/api/flows/[id]/route.ts
+import { NextResponse } from "next/server";
+import { getFlowByAnyId } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+
+interface Params {
+  id: string;
+}
+
+export async function GET(
+  _req: Request,
+  context: { params: Params }
+) {
+  const id = decodeURIComponent(context.params.id);
+  const flow = await getFlowByAnyId(id, 24);
+
+  if (!flow) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  return NextResponse.json(flow);
+}
+

@@ -1,0 +1,130 @@
+from fastapi import FastAPI
+import os, json, threading, sys
+import pika, psycopg, yaml
+from datetime import datetime, timezone
+
+AMQP_URL = os.getenv("AMQP_URL", "amqp://admin:admin@rabbitmq:5672")
+PG_CONN  = os.getenv("PG_CONN",  "postgres://postgres:postgres@timescaledb:5432/energy")
+CFG_PATH = os.getenv("CONSTRAINTS", "/app/config/constraints.yaml")
+
+app = FastAPI(title="optimizer")
+stop_flag = False
+
+def log(*a, **k): print("[optimizer]", *a, **k, flush=True)
+
+def _cfg():
+    log("loading config from", CFG_PATH)
+    with open(CFG_PATH, "r") as f:
+        return yaml.safe_load(f)
+
+def _pg(): return psycopg.connect(PG_CONN, autocommit=True)
+
+def _amqp():
+    log("connecting AMQP", AMQP_URL)
+    params = pika.URLParameters(AMQP_URL)
+    conn = pika.BlockingConnection(params)
+    ch = conn.channel()
+    ch.exchange_declare(exchange="amq.topic", exchange_type="topic", durable=True)
+    q = ch.queue_declare(queue="", exclusive=True).method.queue
+    ch.queue_bind(queue=q, exchange="amq.topic", routing_key="forecasts.out")
+    log("bound queue to routing_key=forecasts.out")
+    return conn, ch, q
+
+def _read_forecast(pg, series, steps):
+    cur = pg.cursor()
+    cur.execute("""
+       SELECT target_ts, q50 FROM forecasts
+       WHERE series=%s AND target_ts >= now()
+       ORDER BY target_ts ASC
+       LIMIT %s
+    """, (series, steps))
+    rows = cur.fetchall()
+    ts  = [r[0] for r in rows]
+    q50 = [float(r[1] or 0.0) for r in rows]
+    return ts, q50
+
+def worker():
+    try:
+        cfg = _cfg()
+    except Exception as e:
+        log("FATAL: cannot load config:", e); return
+
+    step_min = int(cfg.get("step_minutes", 5))
+    steps    = int(cfg.get("horizon_steps", 12))
+    series   = cfg.get("series_load", "meter1:load_kw")
+    b        = cfg.get("battery", {})
+    cap      = float(b.get("capacity_kwh", 10.0))
+    soc      = float(b.get("soc_init_kwh", 5.0))
+    chg_max  = float(b.get("charge_max_kw", 3.0))
+    dchg_max = float(b.get("discharge_max_kw", 3.0))
+    eta      = float(b.get("roundtrip_eff", 0.92))
+    price    = float(cfg.get("tariff_eur_per_kwh", 0.30))
+
+    log(f"CFG: series={series}, steps={steps}, step_min={step_min}, cap={cap}kWh, soc_init={soc}kWh")
+
+    try:
+        conn, ch, q = _amqp()
+    except Exception as e:
+        log("FATAL AMQP:", e); return
+
+    with _pg() as pg:
+        cur = pg.cursor()
+        for method, props, body in ch.consume(q, inactivity_timeout=2):
+            if stop_flag: break
+            if body is None: continue
+
+            evt = json.loads(body.decode("utf-8"))
+            log("recv forecasts.out event:", evt)
+
+            tgt_ts, load = _read_forecast(pg, series, steps)
+            log(f"forecast window: {len(load)} points")
+            if not load:
+                ch.basic_ack(method.delivery_tag); continue
+
+            avg = sum(load)/len(load)
+            setpoints = []
+            soc_kwh = soc
+            for l in load:
+                if l > avg:   # entladen
+                    p = min(dchg_max, soc_kwh * (60.0/step_min)) * 0.5
+                    soc_kwh = max(0.0, soc_kwh - p*(step_min/60.0)/eta)
+                else:         # laden
+                    headroom = cap - soc_kwh
+                    p = -min(chg_max, headroom * (60.0/step_min)) * 0.5
+                    soc_kwh = min(cap, soc_kwh - p*(step_min/60.0)*eta)
+                setpoints.append(p)
+
+            now = datetime.now(timezone.utc).replace(microsecond=0)
+            for i, ts in enumerate(tgt_ts):
+                cur.execute("""
+                    INSERT INTO decisions(ts,target_ts,device,setpoint_kw,reason,meta)
+                    VALUES (%s,%s,%s,%s,%s,%s)
+                    ON CONFLICT DO NOTHING
+                """, (now.isoformat(), ts.isoformat(), "battery",
+                      float(setpoints[i]), "heuristic_v0",
+                      json.dumps({"price":price,"eta":eta})))
+                if i == 0:
+                    ch.basic_publish(exchange="amq.topic", routing_key="decisions.out",
+                        body=json.dumps({"device":"battery", "target_ts": ts.isoformat(),
+                                         "setpoint_kw": setpoints[i]}).encode("utf-8"))
+            log(f"wrote {len(tgt_ts)} decisions; first setpoint={setpoints[0]:.3f} kW")
+            ch.basic_ack(method.delivery_tag)
+
+    try: conn.close()
+    except: pass
+
+@app.on_event("startup")
+def on_start():
+    global stop_flag
+    stop_flag = False
+    log("startup → launching worker thread")
+    threading.Thread(target=worker, daemon=True).start()
+
+@app.on_event("shutdown")
+def on_stop():
+    global stop_flag
+    stop_flag = True
+    log("shutdown signal")
+
+@app.get("/health")
+def health(): return {"status":"ok","service":"optimizer"}

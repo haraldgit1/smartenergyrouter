@@ -1,0 +1,165 @@
+// lib/api.ts
+
+// NUR die public-Variante verwenden, damit Client & Server gleich sind
+export const CONSOLE_API_BASE_URL =
+  process.env.NEXT_PUBLIC_CONSOLE_API_BASE_URL ||
+  "http://18.158.43.62:8100"; // fallback nur zur Sicherheit
+
+
+// ---- Typen (angepasst an console_api) ----
+
+export interface DeviceOverview {
+  device_id: string;
+  device_name: string;
+  device_type: string | null;
+  device_location: string | null;
+  device_mode: string | null;
+  device_enabled: boolean;
+  device_created_at: string | null;
+  device_updated_at: string | null;
+  usecase_count: number;
+  last_event_id: number | null;
+  last_event_ts: string | null;
+  last_event_type: string | null;
+  last_event_severity: string | null;
+  last_event_flow_id: string | null;
+  last_event_service_name: string | null;
+  last_event_message: string | null;
+  last_event_payload: any;
+}
+
+export interface DeviceUsecaseExpanded {
+  device_id: string;
+  device_name: string;
+  device_type: string | null;
+  device_location: string | null;
+  device_mode: string | null;
+  device_enabled: boolean;
+  usecase_id: number;
+  usecase_key: string;
+  usecase_name: string;
+  usecase_category: string | null;
+  effective_config: any;
+  mapping_enabled: boolean;
+  mapping_created_at: string | null;
+  mapping_updated_at: string | null;
+}
+
+export interface UsecaseOverview {
+  usecase_id: number;
+  usecase_key: string;
+  usecase_name: string;
+  category: string | null;
+  description: string | null;
+  default_config: any;
+  device_count: number;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export interface Event {
+  event_id: number;
+  ts: string;
+  event_type: string;
+  severity: string;
+  entity_type: string | null;
+  entity_id: string | null;
+  flow_id: string | null;
+  service_name: string | null;
+  message: string | null;
+  payload: any;
+  created_at: string | null;
+}
+
+export interface FlowSummary {
+  flow_id: string;
+  started_at: string;
+  ended_at: string;
+  duration_seconds: number | null;
+  event_count: number;
+  primary_device_id: string | null;
+  device_count: number;
+  services_involved: (string | null)[] | null;
+}
+
+export interface FlowDetail {
+  summary: FlowSummary;
+  events: Event[];
+}
+
+export interface DeviceDetail {
+  device: DeviceOverview;
+  usecases: DeviceUsecaseExpanded[];
+  events: Event[];
+}
+
+// lib/api.ts (ergänzen)
+export interface Flow {
+  plan_id: string;
+  device: string;
+  usecase: string;
+  power_kw: number;
+  window: [string, string][];
+  ts: string;
+  status?: string;
+  raw_payload?: unknown;
+}
+
+export async function getFlowByPlanId(planId: string): Promise<Flow | null> {
+  const res = await fetch(
+    `${CONSOLE_API_BASE_URL}/flows/${encodeURIComponent(planId)}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    if (res.status === 404) return null;
+    throw new Error(`Failed to fetch flow ${planId}: ${res.statusText}`);
+  }
+
+  return (await res.json()) as Flow;
+}
+
+
+
+
+// ---- Helper for fetch ----
+
+async function fetchJson<T>(path: string, init?: RequestInit): Promise<T> {
+  const url = `${CONSOLE_API_BASE_URL}${path}`;
+  const res = await fetch(url, {
+    ...init,
+    // wichtig: Next-Cache deaktivieren, das ist Monitoring
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(`Fetch ${path} failed: ${res.status} ${res.statusText}`);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+// ---- API-Funktionen ----
+
+export async function getDevices(): Promise<DeviceOverview[]> {
+  return fetchJson<DeviceOverview[]>("/api/devices");
+}
+
+export async function getDeviceDetail(
+  deviceId: string,
+): Promise<DeviceDetail> {
+  return fetchJson<DeviceDetail>(`/api/devices/${deviceId}`);
+}
+
+export async function getFlows(hours = 24): Promise<FlowSummary[]> {
+  return fetchJson<FlowSummary[]>(`/api/flows?hours=${hours}`);
+}
+
+export async function getFlowDetail(flowId: string): Promise<FlowDetail> {
+  return fetchJson<FlowDetail>(`/api/flows/${flowId}`);
+}
+
+export async function getUsecases(): Promise<UsecaseOverview[]> {
+  return fetchJson<UsecaseOverview[]>("/api/usecases");
+}
+

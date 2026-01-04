@@ -1,0 +1,68 @@
+// src/app/flows/flows-live-list.tsx
+"use client";
+
+import useSWR from "swr";
+import Link from "next/link";
+
+type Flow = {
+  plan_id: string;
+  device: string;
+  usecase: string;
+  power_kw: number;
+  window: [string, string][];
+  status?: string;
+  ts: string;
+};
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+export function FlowsLiveList({ hours = 24 }: { hours?: number }) {
+  const { data, error, isLoading } = useSWR<Flow[]>(
+    `/api/flows?hours=${hours}`,
+    fetcher,
+    { refreshInterval: 5000 }
+  );
+
+  if (error) return <div className="text-red-500">Error loading flows</div>;
+  if (isLoading || !data) return <div>Loading flows…</div>;
+
+  return (
+    <div className="mt-4 border rounded-lg overflow-hidden">
+      <table className="min-w-full text-sm">
+        <thead className="bg-slate-900 text-slate-100">
+          <tr>
+            <th className="px-3 py-2 text-left">Plan ID</th>
+            <th className="px-3 py-2 text-left">Device</th>
+            <th className="px-3 py-2 text-left">Usecase</th>
+            <th className="px-3 py-2 text-right">Power (kW)</th>
+            <th className="px-3 py-2 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody className="bg-slate-950/60">
+          {data.map((flow) => (
+            <tr
+              key={flow.plan_id}
+              className="border-t border-slate-800 hover:bg-slate-800/60 transition"
+            >
+              <td className="px-3 py-2">
+                <Link
+                  href={`/flows/${encodeURIComponent(flow.plan_id)}`}
+                  className="text-emerald-400 hover:underline"
+                >
+                  {flow.plan_id}
+                </Link>
+              </td>
+              <td className="px-3 py-2">{flow.device}</td>
+              <td className="px-3 py-2">{flow.usecase}</td>
+              <td className="px-3 py-2 text-right">{flow.power_kw}</td>
+              <td className="px-3 py-2">
+                {flow.status ?? <span className="text-slate-400">n/a</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+

@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+asyncpg
+pydantic
+reportlab
+psycopg2-binary
+pika
+requests

@@ -1,0 +1,58 @@
+// app/layout.tsx
+import "./globals.css";
+import type { Metadata } from "next";
+import { ReactNode } from "react";
+import { Inter } from "next/font/google";
+import Link from "next/link";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Smart Energy Router – Console",
+  description: "UseCases & Flows Monitoring UI",
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="de" className="h-full">
+      <body
+        className={`${inter.className} h-full bg-slate-950 text-slate-100`}
+      >
+        <div className="min-h-screen flex flex-col">
+          <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+            <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-blue-500 via-sky-400 to-emerald-400 shadow-lg shadow-blue-500/40" />
+                <div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">
+                    <Link href="/" className="text-xs uppercase tracking-[0.2em] text-slate-400">
+		     Smart Energy Router
+		    </Link>
+                  </div>
+                  <div className="text-sm font-semibold">
+                    UseCases &amp; Flows Console
+                  </div>
+                </div>
+              </div>
+		<nav className="flex items-center gap-4 text-sm text-slate-300">
+		  <Link href="/devices" className="hover:text-white transition-colors">
+		    Devices
+		  </Link>
+		  <Link href="/flows" className="hover:text-white transition-colors">
+		    Flows
+		  </Link>
+		  <Link href="/usecases" className="hover:text-white transition-colors">
+		    UseCases
+		  </Link>
+		</nav>
+            </div>
+          </header>
+          <main className="flex-1">
+            <div className="mx-auto max-w-6xl px-4 py-6">{children}</div>
+          </main>
+        </div>
+      </body>
+    </html>
+  );
+}
+

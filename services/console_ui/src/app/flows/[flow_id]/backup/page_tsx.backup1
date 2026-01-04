@@ -1,0 +1,40 @@
+// app/flows/[flow_id]/page.tsx
+import { getFlowDetail } from "@/lib/api";
+import { FlowTimeline } from "@/components/flow/flow-timeline";
+import Link from "next/link";
+
+interface Props {
+  params: { flow_id: string };
+}
+
+export const dynamic = "force-dynamic";
+
+export default async function FlowDetailPage({ params }: Props) {
+  const flowId = decodeURIComponent(params.flow_id);
+  const flow = await getFlowDetail(flowId);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">Flow Detail</h1>
+          <p className="text-xs text-slate-400">
+            Flow-ID:{" "}
+            <span className="font-mono text-[11px] text-slate-300">
+              {flow.summary.flow_id}
+            </span>
+          </p>
+        </div>
+        <Link
+	  href={`/flows?device_id=${encodeURIComponent(device.device_id)}`}
+	  className="text-[11px] text-sky-400 hover:text-sky-300"
+	>
+	  &rarr; Flows für dieses Device
+        </Link>
+      </div>
+
+      <FlowTimeline flow={flow} />
+    </div>
+  );
+}
+

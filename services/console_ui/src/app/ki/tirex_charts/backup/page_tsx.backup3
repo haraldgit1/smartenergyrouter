@@ -1,0 +1,417 @@
+// src/app/ki/tirex_charts/page.tsx
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ReferenceLine,
+  ResponsiveContainer,
+} from "recharts";
+
+type TiRexChartsResponse = {
+  reference_ts: string;
+  start_ts: string;
+  end_ts: string;
+  resolution_minutes: number;
+  axis: string[];
+  load_actual: (number | null)[];
+  load_q50: (number | null)[];
+  load_q10: (number | null)[];
+  load_q90: (number | null)[];
+  price_ct_per_kwh: (number | null)[];
+  weather_temp_c: (number | null)[];
+  weather_ghi_w_m2: (number | null)[];
+  now_index: number;
+  // neue Meta-Felder zur Datenreichweite:
+  forecast_data_start_ts: string | null;
+  forecast_data_end_ts: string | null;
+  price_data_start_ts: string | null;
+  price_data_end_ts: string | null;
+};
+
+const DEFAULT_SERIES = "meter1:load_kw";
+const DEFAULT_HISTORY_HOURS = 48;
+const DEFAULT_HORIZON_HOURS = 48;
+const DEFAULT_RESOLUTION_MINUTES = 60;
+
+export const dynamic = "force-dynamic";
+
+export default function TiRexChartsPage() {
+  const [data, setData] = useState<TiRexChartsResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const nowIso = new Date().toISOString();
+
+    const params = new URLSearchParams({
+      series: DEFAULT_SERIES,
+      history_hours: String(DEFAULT_HISTORY_HOURS),
+      horizon_hours: String(DEFAULT_HORIZON_HOURS),
+      resolution_minutes: String(DEFAULT_RESOLUTION_MINUTES),
+      reference_ts: nowIso,
+    });
+
+    fetch(`/api/tirex_charts?${params.toString()}`)
+      .then(async (res) => {
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`${res.status} – ${text}`);
+        }
+        return res.json();
+      })
+      .then((json: TiRexChartsResponse) => {
+        console.log("TiRexChartsResponse", json);
+        setData(json);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error("TiRexChartsPage error:", err);
+        setError(err.message ?? String(err));
+      });
+  }, []);
+
+  // --------- Zeitformat-Helfer (einheitlich) -------------------
+
+  const formatDate = (d: Date) =>
+    d.toLocaleString("de-AT", {
+      hour: "2-digit",
+      minute: "2-digit",
+      day: "2-digit",
+      month: "2-digit",
+    });
+
+  const formatTsStr = (ts: string) => formatDate(new Date(ts));
+  const formatTsMs = (ms: number) => formatDate(new Date(ms));
+
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <h1 className="text-xl font-semibold">TiRex Charts</h1>
+        <div className="rounded-lg border border-red-500/40 bg-red-950/20 p-3 text-sm text-red-200">
+          Fehler beim Laden der TiRex-Charts: {error}
+        </div>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div className="space-y-4">
+        <h1 className="text-xl font-semibold">TiRex Charts</h1>
+        <div className="rounded-lg border border-slate-800 bg-slate-900/40 p-3 text-sm text-slate-300">
+          Lade TiRex-Daten …
+        </div>
+      </div>
+    );
+  }
+
+  // -------- Datenaufbereitung mit echter Zeitachse --------------
+
+  const axis = data.axis ?? [];
+  const now_index = data.now_index ?? -1;
+  const nowTs =
+    now_index >= 0 && now_index < axis.length ? axis[now_index] : null;
+  const nowMs = nowTs ? Date.parse(nowTs) : null;
+
+  // Oberes Chart: Last (Ist + Forecast)
+  const loadChartData = axis.map((ts, i) => {
+    const t = Date.parse(ts); // ms seit 1970 → echte Zeitachse
+    return {
+      ts,
+      t,
+      actual: data.load_actual[i],
+      q50: data.load_q50[i],
+      q10: data.load_q10[i],
+      q90: data.load_q90[i],
+    };
+  });
+
+  // Unteres Chart: Strompreis
+  const priceChartData = axis.map((ts, i) => {
+    const t = Date.parse(ts);
+    return {
+      ts,
+      t,
+      price: data.price_ct_per_kwh[i],
+    };
+  });
+
+  const hasLoadData = loadChartData.some(
+    (p) =>
+      p.actual != null || p.q50 != null || p.q10 != null || p.q90 != null
+  );
+
+  const hasPriceData = priceChartData.some((p) => p.price != null);
+
+  const LOAD_TOOLTIP_ORDER = ["q90", "q50", "q10", "actual"];
+
+  const COLOR_BLUE = "#60a5fa";
+  const COLOR_GREEN = "#22c55e";
+  const COLOR_RED = "#ef4444";
+
+  return (
+    <div className="space-y-6">
+      {/* Kopfzeile */}
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">
+            TiRex Charts – {DEFAULT_SERIES}
+          </h1>
+          <p className="text-sm text-slate-400">
+            Live-orientierte Sicht rund um den aktuellen Zeitpunkt:
+            Last-History &amp; Forecast plus Strompreis (Awattar) auf
+            gemeinsamer Zeitachse.
+          </p>
+        </div>
+        <div className="text-xs text-right text-slate-400 space-y-1">
+          <div>
+            Range: {formatTsStr(data.start_ts)} – {formatTsStr(data.end_ts)} (
+            {data.resolution_minutes} min)
+          </div>
+          <div>
+            Backend-Referenz:{" "}
+            <span className="font-mono text-amber-200">
+              {formatTsStr(data.reference_ts)}
+            </span>
+          </div>
+          {nowTs && (
+            <div>
+              Jetzt-Linie:{" "}
+              <span className="font-mono text-amber-200">
+                {formatTsStr(nowTs)}
+              </span>
+            </div>
+          )}
+
+          {data.forecast_data_start_ts && data.forecast_data_end_ts && (
+            <div>
+              Last-Forecast in DB:{" "}
+              <span className="font-mono">
+                {formatTsStr(data.forecast_data_start_ts)} –{" "}
+                {formatTsStr(data.forecast_data_end_ts)}
+              </span>
+            </div>
+          )}
+
+          {data.price_data_start_ts && data.price_data_end_ts && (
+            <div>
+              Preise in DB:{" "}
+              <span className="font-mono">
+                {formatTsStr(data.price_data_start_ts)} –{" "}
+                {formatTsStr(data.price_data_end_ts)}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Hinweise */}
+      {!hasLoadData && (
+        <div className="rounded-lg border border-amber-500/40 bg-amber-950/20 p-3 text-xs text-amber-200">
+          Für den aktuellen Zeitraum liegen noch keine Lastdaten vor.
+        </div>
+      )}
+
+      {!hasPriceData && (
+        <div className="rounded-lg border border-amber-500/40 bg-amber-950/20 p-3 text-xs text-amber-200">
+          Keine Strompreis-Daten verfügbar.
+        </div>
+      )}
+
+      {/* ----------------------------------------------------------- */}
+      {/* 1) OBERES CHART – LAST (IST + FORECAST ALS PUNKTE)          */}
+      {/* ----------------------------------------------------------- */}
+
+      <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+        <h2 className="mb-2 text-sm font-semibold text-slate-200">
+          Last (Ist + Forecast)
+        </h2>
+        <div className="h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={loadChartData} syncId="tirex-sync">
+              <CartesianGrid strokeDasharray="3 3" />
+
+              <XAxis
+                dataKey="t" // echte Zeitachse in ms
+                type="number"
+                domain={["auto", "auto"]}
+                tickFormatter={(value) => formatTsMs(value as number)}
+                minTickGap={32}
+                tick={{ fontSize: 10 }}
+              />
+
+              <YAxis
+                tick={{ fontSize: 10 }}
+                label={{
+                  value: "kW",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: { fontSize: 10, fill: "#cbd5f5" },
+                }}
+              />
+
+              <Tooltip
+                labelFormatter={(value) => formatTsMs(value as number)}
+                contentStyle={{
+                  backgroundColor: "#020617",
+                  borderColor: "#1e293b",
+                  borderRadius: 8,
+                  padding: 8,
+                  color: "#e5e7eb",
+                }}
+                labelStyle={{
+                  color: "#cbd5f5",
+                  fontSize: 11,
+                  marginBottom: 4,
+                }}
+                itemStyle={{ fontSize: 11 }}
+                itemSorter={(item) =>
+                  LOAD_TOOLTIP_ORDER.indexOf(
+                    (item?.dataKey as string) ?? "zzz"
+                  )
+                }
+              />
+
+              {nowMs !== null && (
+                <ReferenceLine
+                  x={nowMs}
+                  stroke="#fbbf24"
+                  strokeDasharray="4 4"
+                />
+              )}
+
+              {hasLoadData && (
+                <>
+                  {/* p90 rot – Punkte */}
+                  <Line
+                    type="linear"
+                    dataKey="q90"
+                    name="Forecast q90"
+                    dot={{ r: 1, stroke: COLOR_RED, fill: COLOR_RED }}
+                    activeDot={{ r: 5 }}
+                    stroke={COLOR_RED}
+                    strokeWidth={1.4}
+                    connectNulls={false}
+                  />
+
+                  {/* p50 blau – Punkte */}
+                  <Line
+                    type="linear"
+                    dataKey="q50"
+                    name="Forecast q50"
+                    dot={{ r: 1, stroke: COLOR_BLUE, fill: COLOR_BLUE }}
+                    activeDot={{ r: 5 }}
+                    stroke={COLOR_BLUE}
+                    strokeWidth={1.4}
+                    connectNulls={false}
+                  />
+
+                  {/* p10 grün – Punkte */}
+                  <Line
+                    type="linear"
+                    dataKey="q10"
+                    name="Forecast q10"
+                    dot={{ r: 1, stroke: COLOR_GREEN, fill: COLOR_GREEN }}
+                    activeDot={{ r: 5 }}
+                    stroke={COLOR_GREEN}
+                    strokeWidth={1.4}
+                    connectNulls={false}
+                  />
+
+                  {/* Ist – Blaue Linie + Punkte */}
+                  <Line
+                    type="linear"
+                    dataKey="actual"
+                    name="Ist"
+                    stroke={COLOR_BLUE}
+                    strokeWidth={1.8}
+                    dot={{ r: 1, stroke: COLOR_BLUE, fill: COLOR_BLUE }}
+                    activeDot={{ r: 5 }}
+                    connectNulls={false}
+                  />
+                </>
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* ----------------------------------------------------------- */}
+      {/* 2) UNTERES CHART – STROMPREIS                              */}
+      {/* ----------------------------------------------------------- */}
+
+      <div className="rounded-xl border border-slate-800 bg-slate-950/40 p-3">
+        <h2 className="mb-2 text-sm font-semibold text-slate-200">
+          Strompreis (Awattar)
+        </h2>
+        <div className="h-56">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={priceChartData} syncId="tirex-sync">
+              <CartesianGrid strokeDasharray="3 3" />
+
+              <XAxis
+                dataKey="t"
+                type="number"
+                domain={["auto", "auto"]}
+                tickFormatter={(value) => formatTsMs(value as number)}
+                minTickGap={32}
+                tick={{ fontSize: 10 }}
+              />
+
+              <YAxis
+                tick={{ fontSize: 10 }}
+                label={{
+                  value: "ct/kWh",
+                  angle: -90,
+                  position: "insideLeft",
+                  style: { fontSize: 10, fill: "#cbd5f5" },
+                }}
+              />
+
+              <Tooltip
+                labelFormatter={(value) => formatTsMs(value as number)}
+                contentStyle={{
+                  backgroundColor: "#020617",
+                  borderColor: "#1e293b",
+                  borderRadius: 8,
+                  padding: 8,
+                  color: "#e5e7eb",
+                }}
+                labelStyle={{
+                  color: "#cbd5f5",
+                  fontSize: 11,
+                  marginBottom: 4,
+                }}
+              />
+
+              {nowMs !== null && (
+                <ReferenceLine
+                  x={nowMs}
+                  stroke="#fbbf24"
+                  strokeDasharray="4 4"
+                />
+              )}
+
+              {hasPriceData && (
+                <Line
+                  type="monotone"
+                  dataKey="price"
+                  name="Preis"
+                  dot={false}
+                  stroke={COLOR_BLUE}
+                  strokeWidth={1.8}
+                />
+              )}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+    </div>
+  );
+}
+

@@ -1,0 +1,38 @@
+// app/flows/page.tsx
+import { getFlows, CONSOLE_API_BASE_URL } from "@/lib/api";
+import { FlowsLiveList } from "@/components/flow/flows-live-list";
+
+export const dynamic = "force-dynamic";
+
+interface FlowsPageProps {
+  searchParams: Promise<{ device_id?: string }>;
+}
+
+export default async function FlowsPage({ searchParams }: FlowsPageProps) {
+  const sp = await searchParams;         // <- Promise auflösen
+  const deviceId = sp?.device_id;
+  const hours = 24;
+
+  const flows = await getFlows(hours);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">Flows</h1>
+          <p className="text-sm text-slate-400">
+            Correlation-IDs über die Services hinweg, mit Live-Updates.
+          </p>
+        </div>
+      </div>
+
+      <FlowsLiveList
+        initialFlows={flows}
+        hours={hours}
+        deviceId={deviceId}
+        apiBaseUrl={CONSOLE_API_BASE_URL}
+      />
+    </div>
+  );
+}
+

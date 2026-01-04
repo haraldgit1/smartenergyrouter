@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Just a moment...</title>
+    <style>
+        .btn,body,html{margin:0}.btn,a{text-decoration:none}.btn,.logo a{font-weight:700}html{height:100%;width:100%;padding:0}body{background-color:#fff;background-image:linear-gradient(315deg,#fff 0,#d7e1ec 74%);font-family:Helvetica,Arial,sans-serif;display:flex;flex-direction:column;justify-content:center}a{color:#1fa3ec}.logo{right:15px;bottom:15px;position:absolute}.logo a{color:#b7b7b7;text-transform:uppercase;font-family:Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:2em;border-bottom:5px solid #b7b7b7}.title{font-size:1.5em;color:#404040}.btn{display:inline-block;padding:5px 15px;border:0;border-radius:.317rem;color:#fff;font-size:1rem;line-height:1.5;font-family:"Helvetica Neue",Arial,sans-serif;cursor:pointer;-webkit-appearance:none;-webkit-font-smoothing:antialiased;background-color:#8db7e6}.btn:hover{opacity:.85}.container{text-align:center;top:35vh;display:block;position:relative}.footer{font-size:12px}@-webkit-keyframes bubbles{33%:{-webkit-transform:translateY(10px);transform:translateY(10px)}66%{-webkit-transform:translateY(-10px);transform:translateY(-10px)}100%{-webkit-transform:translateY(0);transform:translateY(0)}}@keyframes bubbles{33%:{-webkit-transform:translateY(10px);transform:translateY(10px)}66%{-webkit-transform:translateY(-10px);transform:translateY(-10px)}100%{-webkit-transform:translateY(0);transform:translateY(0)}}.bubbles{background-color:#404040;width:15px;height:15px;margin:2px;border-radius:100%;-webkit-animation:bubbles .6s 70ms infinite ease-in-out;animation:bubbles .6s 70ms infinite ease-in-out;-webkit-animation-fill-mode:both;animation-fill-mode:both;display:inline-block}
+    </style>
+    <meta name="csrf-token" content="WJJTb2rfyuu2pQDzjGg3NRyOHiCguRg9B0FkeTyk">
+    <meta name="id" content="eyJpdiI6InN2NXRBQzR0eDNjRkNvMWhOWkVWVUE9PSIsInZhbHVlIjoiNU9mSzhWeVQxOGxSNzBVWjV0bkpjUT09IiwibWFjIjoiOWI0OWY0YTMzZjU0Y2M5MmYyMjg2ZjY3ODNkN2Y5NzBkN2QwYTk3NWZmZTBjMzMzMTBlNmFlYTRhZmE5MTEyNSIsInRhZyI6IiJ9">
+
+    
+    <script type="text/javascript">
+        var gs = true;
+        if(/MSIE \d|Trident.*rv:/.test(navigator.userAgent))
+            document.write('<script src="js/bluebird.min.js"><\/script><script src="js/polyfill.min.js"><\/script>');
+    </script>
+</head>
+<body>
+
+
+<div class="container">
+    <div style="margin: 1em;">
+        <div class="bubbles"></div>
+        <div class="bubbles"></div>
+        <div class="bubbles"></div>
+    </div>
+    <span class="title">
+				You are about to be redirected
+			</span>
+
+    <form action="" method="post">
+        <input type="hidden" name="_token" value="WJJTb2rfyuu2pQDzjGg3NRyOHiCguRg9B0FkeTyk" autocomplete="off">        <input type="hidden" id="tos_accepted" name="tos_accepted" value="1">
+        <input type="hidden" id="privacy_accepted" name="privacy_accepted" value="1">
+        <input type="hidden" id="special_id" name="special_id" value="eyJpdiI6InN2NXRBQzR0eDNjRkNvMWhOWkVWVUE9PSIsInZhbHVlIjoiNU9mSzhWeVQxOGxSNzBVWjV0bkpjUT09IiwibWFjIjoiOWI0OWY0YTMzZjU0Y2M5MmYyMjg2ZjY3ODNkN2Y5NzBkN2QwYTk3NWZmZTBjMzMzMTBlNmFlYTRhZmE5MTEyNSIsInRhZyI6IiJ9">
+        <div style="margin: 1em;">
+            <button class="btn" type="submit">I agree, lets continue!</button>
+        </div>
+    </form>
+
+
+    <div class="footer">
+        By clicking continue you agree to the <a target="_blank" href="https://grabify.link/tos">TOS</a> and <a target="_blank" href="https://grabify.link/privacy">Privacy policy</a>.
+    </div>
+</div>
+<div class="logo">
+    <a target="_blank" href="https://grabify.link">Grabify</a>
+</div>
+<canvas id="bubbles"></canvas>
+<script src="/js/ads.js"></script>
+<script type="text/javascript" src="/js/jquery-2.5.1.min.js?id=becdb2801a6652a4af84f6a2d3f8a4f2"></script>
+
+</body>
+</html>

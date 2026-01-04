@@ -1,0 +1,107 @@
+// src/app/ki/forecast/page.tsx
+import { getForecast } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+
+const DEFAULT_SERIES = "meter1:load_kw";
+
+export default async function KIForecastPage() {
+  let data;
+  let error: string | null = null;
+
+  try {
+    // für den Anfang fix, später via searchParams steuerbar machen
+    data = await getForecast(DEFAULT_SERIES, 48, 48);
+  } catch (e: any) {
+    error = e?.message ?? "Unbekannter Fehler beim Laden des Forecasts";
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">KI-Forecast (TiRex / xLSTM)</h1>
+          <p className="text-sm text-slate-400">
+            Historie und Vorhersage für die Zeitreihe{" "}
+            <code className="text-emerald-400">{DEFAULT_SERIES}</code>.
+          </p>
+        </div>
+      </div>
+
+      {error && (
+        <div className="text-sm text-red-400 border border-red-700/60 rounded-md px-3 py-2 bg-red-950/40">
+          {error}
+        </div>
+      )}
+
+      {!error && data && (
+        <>
+          {/* Meta */}
+          <div className="text-xs text-slate-400 space-y-1">
+            <div>Now: {data.meta.now}</div>
+            <div>History from: {data.meta.history_from}</div>
+            <div>Forecast to: {data.meta.forecast_to}</div>
+            <div>
+              Punkte: {data.meta.history_points} History,{" "}
+              {data.meta.forecast_points} Forecast
+            </div>
+          </div>
+
+          {/* Tabellen – später durch Charts ersetzen */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h2 className="text-sm font-medium mb-2">Historie</h2>
+              <div className="max-h-72 overflow-auto text-xs border border-slate-800 rounded-md">
+                <table className="w-full border-collapse">
+                  <thead className="bg-slate-900 sticky top-0">
+                    <tr>
+                      <th className="px-2 py-1 text-left">ts</th>
+                      <th className="px-2 py-1 text-right">value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.history.map((p, idx) => (
+                      <tr key={idx} className="border-t border-slate-800">
+                        <td className="px-2 py-1">{p.ts}</td>
+                        <td className="px-2 py-1 text-right">
+                          {p.value.toFixed(3)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-sm font-medium mb-2">Forecast</h2>
+              <div className="max-h-72 overflow-auto text-xs border border-slate-800 rounded-md">
+                <table className="w-full border-collapse">
+                  <thead className="bg-slate-900 sticky top-0">
+                    <tr>
+                      <th className="px-2 py-1 text-left">target_ts</th>
+                      <th className="px-2 py-1 text-right">q50</th>
+                      <th className="px-2 py-1 text-left">backend</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.forecast.map((p, idx) => (
+                      <tr key={idx} className="border-t border-slate-800">
+                        <td className="px-2 py-1">{p.target_ts}</td>
+                        <td className="px-2 py-1 text-right">
+                          {p.q50.toFixed(3)}
+                        </td>
+                        <td className="px-2 py-1">{p.backend}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+

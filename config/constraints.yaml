@@ -1,0 +1,10 @@
+battery:
+  capacity_kwh: 10.0
+  soc_init_kwh: 5.0
+  charge_max_kw: 3.0
+  discharge_max_kw: 3.0
+  roundtrip_eff: 0.92
+tariff_eur_per_kwh: 0.30
+step_minutes: 5
+horizon_steps: 12
+series_load: "meter1:load_kw"

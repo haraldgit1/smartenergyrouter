@@ -1,0 +1,58 @@
+// src/lib/ki_client.ts
+// Nur für Client-Use (Browser) – KEIN pg, KEIN DB-Import!
+
+export type HistoryPoint = {
+  ts: string;
+  value: number;
+};
+
+export type ForecastPoint = {
+  target_ts: string;
+  q50: number;
+  backend: string;
+};
+
+export type ForecastResponse = {
+  series: string;
+  history: HistoryPoint[];
+  forecast: ForecastPoint[];
+  meta: Record<string, any>;
+};
+
+// eigene Base-URL, damit wir api.ts NICHT importieren müssen
+const CONSOLE_API_BASE_URL =
+  process.env.NEXT_PUBLIC_CONSOLE_API_BASE_URL ?? "http://localhost:8100";
+
+export async function getForecast(
+  series: string,
+  historyHours: number = 24,
+  horizonHours: number = 24
+): Promise<ForecastResponse> {
+  const params = new URLSearchParams({
+    series,
+    history_hours: String(historyHours),
+    horizon_hours: String(horizonHours),
+  });
+
+  const res = await fetch(
+    `${CONSOLE_API_BASE_URL}/ki/forecast?` + params.toString(),    
+    {
+      cache: "no-store",
+    }
+  );
+
+  if (res.status === 404) {
+    const detail = await res.json().catch(() => null);
+    throw new Error(
+      detail?.detail ??
+        `Keine Forecast-Daten für ${series} im gewünschten Zeitraum.`
+    );
+  }
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch forecast: ${res.status} ${res.statusText}`);
+  }
+
+  return res.json();
+}
+

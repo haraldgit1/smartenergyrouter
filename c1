@@ -1,0 +1,4 @@
+docker compose build console_api
+docker compose up -d console_api
+dlog.sh console_api
+echo "dlog.sh console_api"

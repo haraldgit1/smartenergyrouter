@@ -1,0 +1,69 @@
+// app/usecases/page.tsx
+import { getUsecases } from "@/lib/api";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+
+export const dynamic = "force-dynamic";
+
+export default async function UsecasesPage() {
+  const usecases = await getUsecases();
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">UseCases</h1>
+          <p className="text-sm text-slate-400">
+            Stammdaten der Optimierungs-UseCases inkl. Anzahl angebundener Devices.
+          </p>
+        </div>
+        <span className="text-xs text-slate-400">
+          {usecases.length} UseCase(s)
+        </span>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        {usecases.map((u) => (
+          <Card
+            key={u.id}
+            className="border-slate-800 bg-slate-950/70"
+          >
+            <CardContent className="p-4 space-y-2">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs text-slate-300">
+                    [ {u.category} ]
+                  </div>
+                  <div className="text-xs text-slate-400">
+                    <span className="font-mono">{u.id} - {u.name}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col items-end gap-1">
+                    <Badge variant="outline">{u.name}</Badge>
+                  <span className="text-[11px] text-slate-400">
+                    {u.device_count} Device(s)
+                  </span>
+                </div>
+              </div>
+              {u.description && (
+                <div className="text-xs text-slate-300">{u.description}</div>
+              )}
+              {u.default_config && (
+                <details className="mt-2 text-[11px] text-slate-300">
+                  <summary className="cursor-pointer text-slate-400">
+                    Default Config
+                  </summary>
+                  <pre className="mt-1 bg-slate-950/80 border border-slate-800 rounded p-2 max-h-40 overflow-auto">
+                    {JSON.stringify(u.default_config, null, 2)}
+                  </pre>
+                </details>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+

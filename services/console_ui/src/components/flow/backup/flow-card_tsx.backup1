@@ -1,0 +1,64 @@
+"use client";
+
+import { useState } from "react";
+import type { Flow } from "@/lib/api";
+import { FlowDetailsModal } from "./flow-details";
+
+interface FlowCardProps {
+  flow: Flow | any;
+  apiBaseUrl: string;
+}
+
+export function FlowCard({ flow, apiBaseUrl }: FlowCardProps) {
+  const [open, setOpen] = useState(false);
+
+  const device = (flow as any).device ?? "n/a";
+  const usecase = (flow as any).usecase ?? "unknown";
+  const power = (flow as any).power_kw ?? (flow as any).power ?? "n/a";
+  const window = (flow as any).window ?? [];
+  const planId = (flow as any).plan_id ?? (flow as any).id ?? (flow as any).flow_id;
+
+  return (
+    <>
+      <div
+        className="border rounded-lg p-4 shadow-sm cursor-pointer hover:bg-slate-50 transition"
+        onClick={() => setOpen(true)}
+      >
+        <div className="flex justify-between items-start mb-2">
+          <div>
+            <div className="text-xs text-slate-400">Plan / Flow</div>
+            <div className="font-semibold text-sm break-all">{planId}</div>
+          </div>
+        </div>
+
+        <div className="text-xs text-slate-500">
+          <span className="font-medium text-slate-700">Device:</span> {device}
+        </div>
+        <div className="text-xs text-slate-500">
+          <span className="font-medium text-slate-700">UseCase:</span> {usecase}
+        </div>
+        <div className="text-xs text-slate-500">
+          <span className="font-medium text-slate-700">Power:</span> {power} kW
+        </div>
+
+        {window?.[0] && (
+          <div className="mt-2 text-[11px] text-slate-400">
+            Window: {window[0][0]} → {window[0][1]}
+          </div>
+        )}
+
+        <div className="mt-3 text-[11px] text-blue-600 underline">
+          Details anzeigen
+        </div>
+      </div>
+
+      <FlowDetailsModal
+        flow={flow}
+        apiBaseUrl={apiBaseUrl}
+        open={open}
+        onClose={() => setOpen(false)}
+      />
+    </>
+  );
+}
+

@@ -1,0 +1,129 @@
+from fastapi import FastAPI
+import os, json, uuid, contextvars, logging
+from datetime import datetime
+import psycopg2, psycopg2.extras
+import pika
+
+# ------------------------------------------------------------
+# Globale Settings & Kontexte
+# ------------------------------------------------------------
+CORR = contextvars.ContextVar("corr_id", default=None)
+
+app = FastAPI()
+
+def _json_logger(service="optimizer"):
+    """Strukturierte JSON-Logs mit Correlation-ID"""
+    class JsonHandler(logging.StreamHandler):
+        def emit(self, record):
+            payload = {
+                "ts": datetime.utcnow().isoformat() + "Z",
+                "lvl": record.levelname,
+                "msg": record.getMessage(),
+                "svc": service,
+                "corr_id": CORR.get(),
+            }
+            self.stream.write(json.dumps(payload) + "\n")
+    logging.basicConfig(handlers=[JsonHandler()], level=os.getenv("LOG_LEVEL", "INFO"))
+
+_json_logger()
+log = logging.getLogger("optimizer")
+
+# ------------------------------------------------------------
+# Verbindungen
+# ------------------------------------------------------------
+DB_URL = os.getenv("DB_URL", "postgresql://postgres:postgres@timescaledb:5432/energy")
+RABBIT_URL = os.getenv("RABBITMQ_URL", "amqp://admin:admin@rabbitmq:5672")
+
+def db_conn():
+    return psycopg2.connect(DB_URL)
+
+def db_ping():
+    try:
+        with db_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT 1")
+        return True
+    except Exception as e:
+        log.error(f"db ping failed: {e}")
+        return False
+
+def amqp_ping():
+    try:
+        params = pika.URLParameters(RABBIT_URL)
+        with pika.BlockingConnection(params) as conn:
+            ch = conn.channel()
+            ch.queue_declare(queue="forecasts.out", passive=True)
+        return True
+    except Exception as e:
+        log.error(f"amqp ping failed: {e}")
+        return False
+
+# ------------------------------------------------------------
+# Health & Readiness
+# ------------------------------------------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "optimizer"}
+
+@app.get("/ready")
+def ready():
+    return {"ready": bool(db_ping() and amqp_ping())}
+
+# ------------------------------------------------------------
+# Optimizer-Logik (vereinfacht)
+# ------------------------------------------------------------
+def clamp(v, lo, hi): 
+    return max(lo, min(hi, v))
+
+def on_forecast_message(ch, method, properties, body):
+    corr = (properties.headers or {}).get("correlation_id") if properties else None
+    if not corr:
+        corr = getattr(properties, "correlation_id", None)
+    if not corr:
+        corr = str(uuid.uuid4())
+    CORR.set(corr)
+
+    try:
+        payload = json.loads(body.decode("utf-8"))
+        series = payload.get("series", "unknown")
+        log.info(f"recv forecasts.out event for {series}")
+
+        # Parameter aus Env oder Defaults
+        step_min = 5
+        max_kw = float(os.getenv("MAX_CHARGE_KW", "1.5"))
+        cap_kwh = 10.0
+        soc = 5.0
+
+        # Dummy-Heuristik (12 Schritte)
+        now = datetime.utcnow()
+        decisions = []
+        for i in range(12):
+            target_ts = now + (i + 1) * datetime.timedelta(minutes=step_min)
+            sp = (-1.5 if i % 2 == 0 else 1.5)
+            sp = clamp(sp, -max_kw, +max_kw)
+            soc = clamp(soc + sp * (step_min / 60.0), 0.0, cap_kwh)
+            decisions.append((target_ts, sp, "heuristic_v0"))
+
+        # in DB schreiben (UPSERT)
+        with db_conn() as c, c.cursor() as cur:
+            for tgt, sp, reason in decisions:
+                cur.execute(
+                    """
+                    INSERT INTO decisions (ts, target_ts, device, setpoint_kw, reason)
+                    VALUES (NOW(), %s, %s, %s, %s)
+                    ON CONFLICT (ts, target_ts, device)
+                    DO UPDATE SET setpoint_kw = EXCLUDED.setpoint_kw,
+                                  reason = EXCLUDED.reason
+                    """,
+                    (tgt, "battery", sp, reason)
+                )
+
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        log.info(f"wrote {len(decisions)} decisions; corr={corr}")
+
+    except Exception as e:
+        log.error(f"failed to handle message: {e}")
+        try:
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+        except Exception:
+            pass
+

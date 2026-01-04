@@ -1,0 +1,96 @@
+from fastapi import FastAPI
+import os, json, logging, threading, time
+from datetime import datetime, timedelta
+import contextvars
+
+APP="optimizer"; LOG_LEVEL=os.getenv("LOG_LEVEL","INFO").upper()
+AMQP_URL = os.getenv("RABBITMQ_URL") or os.getenv("AMQP_URL") or "amqp://admin:admin@rabbitmq:5672"
+FORECAST_QUEUE = os.getenv("FORECAST_QUEUE","forecasts.out")
+DB_URL   = os.getenv("DB_URL") or os.getenv("PG_CONN") or "postgresql://postgres:postgres@timescaledb:5432/energy"
+STEP_MIN=int(os.getenv("STEP_MIN","5")); MAX_KW=float(os.getenv("MAX_CHARGE_KW","1.5"))
+CAP=float(os.getenv("BATTERY_CAP_KWH","10.0")); SOC0=float(os.getenv("SOC_INIT_KWH","5.0")); DEVICE=os.getenv("DEVICE","battery")
+
+CORR=contextvars.ContextVar("corr_id",default=None)
+class J(logging.StreamHandler):
+    def emit(self,r): print(json.dumps({"ts":datetime.utcnow().isoformat()+"Z","lvl":r.levelname,"msg":r.getMessage(),"svc":APP,"corr_id":CORR.get()}))
+logging.basicConfig(handlers=[J()],level=LOG_LEVEL); log=logging.getLogger(APP)
+
+def _pg():
+    import psycopg2
+    return psycopg2.connect(DB_URL)
+
+def db_ping():
+    try:
+        c=_pg();cur=c.cursor();cur.execute("SELECT 1");cur.close();c.close();return True
+    except Exception as e: log.error(f"db ping failed: {e}"); return False
+
+def amqp_ping():
+    try:
+        import pika; p=pika.URLParameters(AMQP_URL)
+        with pika.BlockingConnection(p) as conn:
+            ch=conn.channel(); ch.queue_declare(queue=FORECAST_QUEUE, passive=True)
+        return True
+    except Exception as e: log.error(f"amqp ping failed: {e}"); return False
+
+def upsert_decisions(decisions):
+    c=_pg(); cur=c.cursor()
+    for tgt,sp,reason in decisions:
+        cur.execute("""
+            INSERT INTO decisions (ts,target_ts,device,setpoint_kw,reason)
+            VALUES (NOW(),%s,%s,%s,%s)
+            ON CONFLICT (ts,target_ts,device)
+            DO UPDATE SET setpoint_kw=EXCLUDED.setpoint_kw, reason=EXCLUDED.reason
+        """,(tgt,DEVICE,sp,reason))
+    c.commit(); c.close()
+
+def clamp(v,lo,hi): return max(lo,min(hi,v))
+def build_decisions(now, n=12):
+    soc=SOC0; out=[]
+    for i in range(n):
+        tgt = now + timedelta(minutes=STEP_MIN*(i+1))
+        sp  = MAX_KW if i%2 else -MAX_KW
+        sp  = clamp(sp,-MAX_KW,MAX_KW)
+        soc = clamp(soc + sp*(STEP_MIN/60.0),0.0,CAP)
+        out.append((tgt,sp,"heuristic_v0"))
+    return out
+
+def on_msg(ch, method, props, body):
+    hdr=getattr(props,"headers",{}) or {}; corr=hdr.get("correlation_id") or getattr(props,"correlation_id",None) or str(int(time.time()*1000))
+    CORR.set(corr)
+    try:
+        _=json.loads(body.decode("utf-8"))  # Inhalt reicht als Trigger
+        decisions=build_decisions(datetime.utcnow(),12)
+        upsert_decisions(decisions)
+        ch.basic_ack(delivery_tag=method.delivery_tag)
+        log.info(f"wrote {len(decisions)} decisions")
+    except Exception as e:
+        log.error(f"failed to handle message: {e}")
+        try: ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+        except Exception: pass
+
+def worker():
+    import pika
+    while True:
+        try:
+            params=pika.URLParameters(AMQP_URL)
+            conn=pika.BlockingConnection(params); ch=conn.channel()
+            ch.queue_declare(queue=FORECAST_QUEUE, durable=True)
+            ch.basic_qos(prefetch_count=16)
+            ch.basic_consume(queue=FORECAST_QUEUE, on_message_callback=on_msg, auto_ack=False)
+            log.info(f"worker consuming queue={FORECAST_QUEUE}")
+            ch.start_consuming()
+        except Exception as e:
+            log.error(f"AMQP connection error, reconnecting in 3s: {e}"); time.sleep(3)
+
+app=FastAPI()
+@app.on_event("startup")
+def startup():
+    t=threading.Thread(target=worker, daemon=True); t.start()
+    log.info("startup → launching AMQP worker thread")
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": APP}
+@app.get("/ready")  
+def ready():
+    return {"ready": bool(db_ping() and amqp_ping())}
+

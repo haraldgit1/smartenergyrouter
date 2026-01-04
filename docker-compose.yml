@@ -1,0 +1,291 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ["5672:5672", "15672:15672"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-admin}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  timescaledb:
+    image: ${TIMESCALE_IMAGE:-timescale/timescaledb-ha:pg17-all-amd64}
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-energy}
+    ports: ["5432:5432"]
+    volumes:
+      - tsdata:/var/lib/postgresql/data
+      - ./timescaledb/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 10
+
+  ingestor:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/ingestor:${IMAGE_TAG:-latest}
+    build: ./services/ingestor
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+      PG_CONN: ${PG_CONN:-postgres://postgres:postgres@timescaledb:5432/energy}
+    depends_on: [rabbitmq, timescaledb]
+
+  feature_engine:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/feature_engine:${IMAGE_TAG:-latest}
+    build: ./services/feature_engine
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+      PG_CONN: ${PG_CONN:-postgres://postgres:postgres@timescaledb:5432/energy}
+    depends_on: [rabbitmq, timescaledb]
+
+  optimizer:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/optimizer:${IMAGE_TAG:-latest}
+    build: ./services/optimizer
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+      PG_CONN: ${PG_CONN:-postgres://postgres:postgres@timescaledb:5432/energy}
+      OBJECTIVE: ${OBJECTIVE:-cost}
+      CONSTRAINTS: /app/config/constraints.yaml
+      QUEUE_IN: forecasts.out
+      QUEUE_OUT: decisions.out
+      PGHOST: timescaledb
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: energy
+    command:
+      uvicorn main:app --host 0.0.0.0 --port 8000
+    depends_on: [predictor_tirex, rabbitmq, timescaledb]
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config/constraints.yaml:/app/config/constraints.yaml:ro
+      - ./services/optimizer:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').getcode()==200 else 1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  optimizer_worker:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/optimizer:${IMAGE_TAG:-latest}
+    build: ./services/optimizer
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+      PG_CONN: ${PG_CONN:-postgres://postgres:postgres@timescaledb:5432/energy}
+    depends_on:
+      - rabbitmq
+      - timescaledb
+    command: ["python", "-u", "optimizer_worker.py"]
+    volumes:
+      - ./services/optimizer:/app
+      - ./config/constraints.yaml:/app/config/constraints.yaml:ro
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python - <<'PY'\nimport os, sys\nimport pika\nimport psycopg2\n\namqp = os.environ.get('AMQP_URL')\npg = os.environ.get('PG_CONN')\n\n# RabbitMQ check\nparams = pika.URLParameters(amqp)\nparams.socket_timeout = 5\nparams.blocked_connection_timeout = 5\nconn = pika.BlockingConnection(params)\nconn.close()\n\n# Postgres check\nc = psycopg2.connect(pg, connect_timeout=5)\ncur = c.cursor()\ncur.execute('select 1')\ncur.fetchone()\nc.close()\n\nprint('ok')\nPY"
+        ]
+      interval: 30s
+      timeout: 12s
+      retries: 3
+      start_period: 20s
+
+  optimizer_peak_shaving:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/optimizer:${IMAGE_TAG:-latest}
+    build: ./services/optimizer
+    depends_on:
+      - rabbitmq
+      - optimizer
+    restart: unless-stopped
+    environment:
+      AMQP_URL: amqp://admin:admin@rabbitmq:5672/%2f
+    command: python /app/peak_shaving_worker.py
+    volumes:
+      - ./services/optimizer:/app
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  optimizer_price_follow:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/optimizer:${IMAGE_TAG:-latest}
+    build: ./services/optimizer
+    depends_on:
+      - rabbitmq
+      - optimizer
+    restart: unless-stopped
+    environment:
+      AMQP_URL: amqp://admin:admin@rabbitmq:5672/%2f
+    command: python /app/price_follow_boiler_worker.py
+    volumes:
+      - ./services/optimizer:/app
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+
+  policy:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/policy:${IMAGE_TAG:-latest}
+    build: ./services/policy
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+    depends_on: [optimizer, rabbitmq]
+
+  router_agent:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/router_agent:${IMAGE_TAG:-latest}
+    build:
+      context: ./services/router_agent
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+      QUEUE_IN: decisions.out
+      PGHOST: timescaledb
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: energy
+      AMQP_QUEUE: setpoints.out
+      ROUTER_BASE: http://localhost:8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    depends_on:
+      - policy
+      - rabbitmq
+      - timescaledb
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/router_agent:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').getcode()==200 else 1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+  router_consumer:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/router_agent:${IMAGE_TAG:-latest}
+    build: ./services/router_agent
+    depends_on:
+      - rabbitmq
+      - router_agent
+    restart: unless-stopped
+    environment:
+      AMQP_URL: amqp://admin:admin@rabbitmq:5672/%2f
+      AMQP_QUEUE: setpoints.out
+      ROUTER_BASE: http://router_agent:8000
+    command: python /app/amqp_consumer.py
+    volumes:
+      - ./services/router_agent:/app
+
+  llm_svc:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/llm_svc:${IMAGE_TAG:-latest}
+    build: ./services/llm_svc
+    environment:
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672}
+    depends_on: [rabbitmq]
+
+  console_api:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/console_api:${IMAGE_TAG:-latest}
+    build:
+      context: ./services/console_api
+      dockerfile: Dockerfile
+    container_name: console_api
+    environment:
+      DB_HOST: timescaledb
+      DB_PORT: "5432"
+      DB_NAME: energy
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      RABBITMQ_URL: amqp://admin:admin@rabbitmq:5672/
+      PREDICTOR_URL: "http://predictor_tirex:8000"
+    ports:
+      - "8100:8100"
+    depends_on:
+      - timescaledb
+      - predictor_tirex
+
+  weather_collector:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/weather_collector:${IMAGE_TAG:-latest}
+    build: ./services/weather_collector
+    restart: unless-stopped
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      WEATHER_LAT: "47.07"
+      WEATHER_LON: "15.44"
+      WEATHER_TIMEZONE: "UTC"
+      WEATHER_INTERVAL_SECONDS: "3600"
+      WEATHER_HOURLY_VARS: "temperature_2m,shortwave_radiation,cloud_cover"
+    depends_on:
+      - timescaledb
+
+  price_collector:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/price_collector:${IMAGE_TAG:-latest}
+    build: ./services/price_collector
+    restart: unless-stopped
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      AWATTAR_API_URL: "https://api.awattar.at/v1/marketdata"
+      PRICE_INTERVAL_SECONDS: "3600"
+    depends_on:
+      - timescaledb
+
+  predictor_tirex:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/predictor_tirex:${IMAGE_TAG:-latest}
+    build: ./services/predictor_tirex
+    restart: unless-stopped
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      FORECAST_HISTORY_HOURS: "168"
+      FORECAST_HORIZON_HOURS: "48"
+      FORECAST_RESOLUTION_MIN: "60"
+      FORECAST_BACKEND: "baseline_v1"
+    depends_on:
+      - timescaledb
+    ports:
+      - "8101:8000"
+
+  bandit_agent:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/bandit_agent:${IMAGE_TAG:-latest}
+    build: ./services/bandit_agent
+    restart: unless-stopped
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672/%2f}
+      BANDIT_QUEUE_IN: "forecasts.bandit"
+      BANDIT_QUEUE_OUT: "decisions.out"
+      BANDIT_QUEUE_REW: "rewards.in"
+      BANDIT_EPSILON: "0.10"
+      BANDIT_ALPHA: "0.10"
+      BANDIT_MIN_DECISION_INTERVAL_SEC: "300"
+    depends_on:
+      - rabbitmq
+      - timescaledb
+
+  bandit_context_emitter:
+    image: ${IMAGE_PREFIX:-ghcr.io/sailer-engineering/smartenergyrouter}/bandit_context_emitter:${IMAGE_TAG:-latest}
+    build: ./services/bandit_context_emitter
+    restart: unless-stopped
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      AMQP_URL: ${AMQP_URL:-amqp://admin:admin@rabbitmq:5672/%2f}
+      EMIT_INTERVAL_SECONDS: "300"
+      FORECASTS_EXCHANGE: "forecasts.x"
+      FORECASTS_ROUTING_KEY: "forecasts.out"
+      SERIES_LOAD: "meter1:load_kw"
+      SERIES_PV: "pv1:power_kw"
+      SERIES_SOC: "battery1:soc"
+      DUMMY_SOC: "0.62"
+      DUMMY_PV_KW: "0.0"
+    depends_on:
+      - rabbitmq
+      - timescaledb
+
+volumes:
+  tsdata:
+

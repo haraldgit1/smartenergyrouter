@@ -1,0 +1,476 @@
+// src/lib/api.ts
+
+import { Pool } from "pg";
+
+// --------------------
+// DB-Verbindung (Timescale/Postgres)
+// --------------------
+
+const PG_CONN_STR =
+  process.env.PG_CONN_STR ??
+  "postgres://postgres:postgres@localhost:5432/energy";
+
+const pool = new Pool({
+  connectionString: PG_CONN_STR,
+});
+
+// kleine Helper-Funktion für SQL-Queries
+async function query<T = any>(sql: string, params: any[] = []): Promise<T[]> {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(sql, params);
+    return res.rows as T[];
+  } finally {
+    client.release();
+  }
+}
+
+// --------------------
+// Allgemeine Typen
+// --------------------
+
+export interface Device {
+  device_id: string;
+  name: string;
+  type: string | null;
+  location: string | null;
+  rated_power_kw: number | null;
+  backend_type: string | null;
+  backend_ref: string | null;
+  mode: string | null;
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+  [key: string]: any;
+}
+
+export interface Usecase {
+  id: string;
+  name: string;
+  description?: string | null;
+  [key: string]: any;
+}
+
+export interface Flow {
+  flow_id?: string;
+  plan_id?: string;
+  device: string;
+  usecase: string;
+  power_kw: number;
+  window?: [string, string][];
+  ts?: string;
+  status?: string;
+  raw_payload?: any;
+  [key: string]: any;
+}
+
+// Detail-Struktur für Device-Detailseite
+export interface DeviceDetail {
+  device: {
+    device_id: string;
+    device_name: string;
+    device_type?: string | null;
+    device_location?: string | null;
+    device_mode?: string | null;
+    device_enabled: boolean;
+    [key: string]: any;
+  };
+  usecases: Array<{
+    usecase_id: number | string;
+    usecase_name: string;
+    usecase_key?: string;
+    usecase_category?: string | null;
+    mapping_enabled?: boolean;
+    effective_config?: any;
+    [key: string]: any;
+  }>;
+  events: Array<{
+    event_id: string;
+    ts: string;
+    event_type: string;
+    message?: string | null;
+    service_name?: string | null;
+    entity_type?: string | null;
+    entity_id?: string | null;
+    severity?: string | null;
+    flow_id?: string | null;
+    [key: string]: any;
+  }>;
+}
+
+// --------------------
+// TiRex Charts – Typen
+// --------------------
+
+export interface TiRexChartsResponse {
+  reference_ts: string;       // gerundetes "jetzt" (ISO)
+  start_ts: string;
+  end_ts: string;
+  resolution_minutes: number;
+
+  axis: string[];             // gemeinsame Zeitachse
+
+  load_actual: (number | null)[];
+  load_q50: (number | null)[];
+  load_q10: (number | null)[];
+  load_q90: (number | null)[];
+
+  price_ct_per_kwh: (number | null)[];
+  weather_temp_c: (number | null)[];
+  weather_ghi_w_m2: (number | null)[];
+
+  now_index: number;          // Index in axis[]
+}
+
+interface TiRexRow {
+  ts: Date;
+  load_actual: number | null;
+  load_q10: number | null;
+  load_q50: number | null;
+  load_q90: number | null;
+  price_ct_per_kwh: number | null;
+  weather_temp_c: number | null;
+  weather_ghi_w_m2: number | null;
+}
+
+// --------------------
+// Basis-URLs
+// --------------------
+
+// Router-Agent (FastAPI) – für /info/schedules etc.
+export const ROUTER_AGENT_BASE_URL =
+  process.env.NEXT_PUBLIC_ROUTER_AGENT_BASE_URL ?? "http://localhost:8000";
+
+// console_api – für Flows, Device-Details, Reports etc.
+export const CONSOLE_API_BASE_URL =
+  process.env.NEXT_PUBLIC_CONSOLE_API_BASE_URL ?? "http://localhost:8100";
+
+// --------------------
+// Zeit-Helfer für TiRex
+// --------------------
+
+function truncateToResolution(date: Date, resolutionMinutes: number): Date {
+  const ms = date.getTime();
+  const bucketMs = resolutionMinutes * 60_000;
+  const truncated = Math.floor(ms / bucketMs) * bucketMs;
+  return new Date(truncated);
+}
+
+function buildTimeWindow(
+  referenceTs: Date,
+  historyHours: number,
+  horizonHours: number
+): { startTs: Date; endTs: Date } {
+  const startMs = referenceTs.getTime() - historyHours * 3600_000;
+  const endMs = referenceTs.getTime() + horizonHours * 3600_000;
+  return {
+    startTs: new Date(startMs),
+    endTs: new Date(endMs),
+  };
+}
+
+// --------------------
+// Devices – direkt aus devices (Liste)
+// --------------------
+
+export async function getDevices(): Promise<Device[]> {
+  const rows = await query<Device>(
+    `
+    SELECT
+      device_id,
+      name,
+      type,
+      location,
+      rated_power_kw,
+      backend_type,
+      backend_ref,
+      mode,
+      enabled,
+      created_at,
+      updated_at
+    FROM devices
+    ORDER BY device_id
+    `
+  );
+
+  return rows;
+}
+
+// Device-Detail – über console_api /api/devices/{device_id}
+export async function getDeviceDetail(deviceId: string): Promise<DeviceDetail> {
+  const url = new URL(
+    `/api/devices/${encodeURIComponent(deviceId)}`,
+    CONSOLE_API_BASE_URL
+  );
+
+  const res = await fetch(url.toString(), {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch device detail from console_api /api/devices/${deviceId}: ${res.status} ${res.statusText}`
+    );
+  }
+
+  return (await res.json()) as DeviceDetail;
+}
+
+// --------------------
+// Usecases – direkt aus usecases
+// --------------------
+
+export async function getUsecases(): Promise<Usecase[]> {
+  const rows = await query<any>(
+    `
+    SELECT *
+    FROM usecases
+    ORDER BY usecase_id
+    `
+  );
+
+  return rows.map((r) => {
+    const id = r.usecase_id ?? r.id;
+    const name = r.name ?? null;
+    const category = r.category ?? null;
+    const description = r.description ?? null;
+
+    return {
+      id,
+      name,
+      category,
+      description,
+      ...r,
+    } as Usecase;
+  });
+}
+
+// --------------------
+// Flows – über console_api (/api/flows)
+// --------------------
+
+export interface FlowSummary {
+  flow_id: string;
+  started_at: string;
+  ended_at: string;
+  duration_seconds: number | null;
+  event_count: number;
+  primary_device_id: string | null;
+  device_count: number;
+  services_involved: string[];
+  [key: string]: any;
+}
+
+export interface FlowDetail {
+  summary: FlowSummary;
+  events: Array<{
+    event_id: string;
+    ts: string;
+    event_type: string;
+    message?: string | null;
+    service_name?: string | null;
+    entity_type?: string | null;
+    entity_id?: string | null;
+    severity?: string | null;
+    flow_id?: string | null;
+    [key: string]: any;
+  }>;
+}
+
+// Liste der Flows von console_api holen
+export async function getFlows(hours: number): Promise<FlowSummary[]> {
+  const url = new URL("/api/flows", CONSOLE_API_BASE_URL);
+  url.searchParams.set("hours", String(hours));
+
+  const res = await fetch(url.toString(), {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    if (res.status === 404) {
+      return [];
+    }
+    throw new Error(
+      `Failed to fetch flows from console_api /api/flows: ${res.status} ${res.statusText}`
+    );
+  }
+
+  const data = await res.json();
+  return Array.isArray(data) ? data : [];
+}
+
+// Detail eines Flows von console_api holen
+export async function getFlowDetail(flowId: string): Promise<FlowDetail> {
+  const url = new URL(
+    `/api/flows/${encodeURIComponent(flowId)}`,
+    CONSOLE_API_BASE_URL
+  );
+
+  const res = await fetch(url.toString(), {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error(
+      `Failed to fetch flow detail from console_api /api/flows/${flowId}: ${res.status} ${res.statusText}`
+    );
+  }
+
+  return (await res.json()) as FlowDetail;
+}
+
+// --------------------
+// MDM-Menü
+// --------------------
+
+export interface MenuItem {
+  menu_key: string;
+  label: string;
+  description?: string | null;
+  route_path: string;
+  icon_name?: string | null;
+  section: string;
+  sort_order: number;
+}
+
+/**
+ * Holt alle Menüeinträge aus mdm_menu_items.
+ * Aktuell ohne Rollenfilter – d.h. ALLE Einträge.
+ */
+export async function getMenu(): Promise<MenuItem[]> {
+  const rows = await query<MenuItem>(
+    `
+    SELECT
+      menu_key,
+      label,
+      description,
+      route_path,
+      icon_name,
+      section,
+      sort_order
+    FROM mdm_menu_items
+    ORDER BY section, sort_order, menu_key
+    `
+  );
+
+  return rows;
+}
+
+// --------------------
+// TiRex Charts – synchrone Zeitreihen
+// --------------------
+
+export async function getTiRexCharts(options: {
+  series: string;
+  historyHours: number;
+  horizonHours: number;
+  resolutionMinutes: number;
+  referenceTs?: string; // optional ISO
+}): Promise<TiRexChartsResponse> {
+  const {
+    series,
+    historyHours,
+    horizonHours,
+    resolutionMinutes,
+    referenceTs,
+  } = options;
+
+  // 1) Referenzzeit bestimmen und auf Raster runden
+  const refDateRaw = referenceTs ? new Date(referenceTs) : new Date();
+  const refDate = truncateToResolution(refDateRaw, resolutionMinutes);
+
+  // 2) Zeitfenster
+  const { startTs, endTs } = buildTimeWindow(
+    refDate,
+    historyHours,
+    horizonHours
+  );
+
+  // 3) SQL ausführen – gemeinsame Achse + JOIN auf Messungen, Forecast, Preis, Wetter
+  const sql = `
+    WITH axis AS (
+      SELECT generate_series(
+        $1::timestamptz,
+        $2::timestamptz,
+        ($3::int || ' minutes')::interval
+      ) AS ts
+    )
+    SELECT
+      a.ts,
+      m.value          AS load_actual,
+      f.q10            AS load_q10,
+      f.q50            AS load_q50,
+      f.q90            AS load_q90,
+      p.price_ct_per_kwh,
+      w.temp_c         AS weather_temp_c,
+      w.ghi_w_m2       AS weather_ghi_w_m2
+    FROM axis a
+    LEFT JOIN LATERAL (
+      SELECT value
+      FROM measurements
+      WHERE series = $4
+        AND ts >= a.ts
+        AND ts <  a.ts + ($3::int || ' minutes')::interval
+      ORDER BY ts DESC
+      LIMIT 1
+    ) m ON TRUE
+    LEFT JOIN forecasts f
+      ON f.series    = $4
+     AND f.target_ts = a.ts
+    LEFT JOIN awattar_prices p
+      ON p.ts = a.ts
+    LEFT JOIN weather_points w
+      ON w.ts = a.ts
+    ORDER BY a.ts;
+  `;
+
+  const rows = await query<TiRexRow>(sql, [
+    startTs.toISOString(),
+    endTs.toISOString(),
+    resolutionMinutes,
+    series,
+  ]);
+
+  // 4) Axis + Arrays aufbauen
+  const axis: string[] = [];
+  const load_actual: (number | null)[] = [];
+  const load_q10: (number | null)[] = [];
+  const load_q50: (number | null)[] = [];
+  const load_q90: (number | null)[] = [];
+  const price_ct_per_kwh: (number | null)[] = [];
+  const weather_temp_c: (number | null)[] = [];
+  const weather_ghi_w_m2: (number | null)[] = [];
+
+  for (const r of rows) {
+    const tsIso = r.ts.toISOString();
+    axis.push(tsIso);
+    load_actual.push(r.load_actual ?? null);
+    load_q10.push(r.load_q10 ?? null);
+    load_q50.push(r.load_q50 ?? null);
+    load_q90.push(r.load_q90 ?? null);
+    price_ct_per_kwh.push(r.price_ct_per_kwh ?? null);
+    weather_temp_c.push(r.weather_temp_c ?? null);
+    weather_ghi_w_m2.push(r.weather_ghi_w_m2 ?? null);
+  }
+
+  // 5) now_index bestimmen (Index des Referenzzeitpunkts)
+  const refIso = refDate.toISOString();
+  const now_index = axis.findIndex((ts) => ts === refIso);
+
+  return {
+    reference_ts: refIso,
+    start_ts: startTs.toISOString(),
+    end_ts: endTs.toISOString(),
+    resolution_minutes: resolutionMinutes,
+    axis,
+    load_actual,
+    load_q10,
+    load_q50,
+    load_q90,
+    price_ct_per_kwh,
+    weather_temp_c,
+    weather_ghi_w_m2,
+    now_index,
+  };
+}
+

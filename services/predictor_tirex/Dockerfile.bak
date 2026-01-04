@@ -1,0 +1,31 @@
+# services/predictor_tirex/Dockerfile
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System-Abhängigkeiten für psycopg2 etc.
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Python-Abhängigkeiten
+# Hinweis: torch + tirex-ts -> CPU-Variante
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn[standard] \
+    psycopg2-binary \
+    pandas \
+    numpy \
+    "torch>=2.3,<3.0" \
+    tirex-ts
+
+# App-Files
+COPY main.py features.py model_tirex.py ./
+COPY main.py features.py model_tirex.py model_baseline.py ./
+
+# FastAPI starten
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+

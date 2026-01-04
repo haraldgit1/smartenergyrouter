@@ -1,0 +1,194 @@
+// app/devices/[device_id]/page.tsx
+import { getDeviceDetail, CONSOLE_API_BASE_URL } from "@/lib/api";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import { Printer } from "lucide-react";
+
+export const dynamic = "force-dynamic";
+
+interface Props {
+  // Next.js 16: params ist ein Promise
+  params: Promise<{ device_id: string }>;
+}
+
+type DeviceForHeader = {
+  device_id: string;
+  device_name: string;
+  device_type?: string | null;
+  device_location?: string | null;
+  device_mode?: string | null;
+  device_enabled: boolean;
+};
+
+// Header mit Device-Infos + Druck-Buttons (PDF/CSV Datenblatt)
+function DeviceHeader({ device }: { device: DeviceForHeader }) {
+  const base = `${CONSOLE_API_BASE_URL}/mdm/reports/devices`;
+  const pdfUrl = `${base}/${encodeURIComponent(device.device_id)}/sheet.pdf`;
+  const csvUrl = `${base}/${encodeURIComponent(device.device_id)}/sheet.csv`;
+
+  return (
+    <div className="flex items-baseline justify-between gap-3">
+      <div>
+        <h1 className="text-xl font-semibold">{device.device_name}</h1>
+        <p className="text-xs text-slate-400">
+          ID: {device.device_id} · {device.device_type ?? "type: n/a"} ·{" "}
+          {device.device_location ?? "no location"}
+        </p>
+      </div>
+      <div className="flex items-center gap-2 text-xs">
+        <Badge variant={device.device_mode === "live" ? "default" : "outline"}>
+          {device.device_mode ?? "n/a"}
+        </Badge>
+        <Badge variant={device.device_enabled ? "default" : "outline"}>
+          {device.device_enabled ? "enabled" : "disabled"}
+        </Badge>
+
+        {/* Druck-Buttons für Datenblatt */}
+        <a
+          href={pdfUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-slate-700 hover:bg-slate-800 text-[11px]"
+          title="Datenblatt als PDF"
+        >
+          <Printer className="h-3 w-3" />
+          <span>PDF</span>
+        </a>
+        <a
+          href={csvUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 px-2 py-1 rounded-md border border-slate-700 hover:bg-slate-800 text-[11px]"
+          title="Datenblatt als CSV/Excel"
+        >
+          <Printer className="h-3 w-3" />
+          <span>CSV</span>
+        </a>
+      </div>
+    </div>
+  );
+}
+
+export default async function DeviceDetailPage({ params }: Props) {
+  // >>> WICHTIG: params ist ein Promise – also zuerst awaiten
+  const p = await params;
+  const deviceId = decodeURIComponent(p.device_id);
+
+  const detail = await getDeviceDetail(deviceId);
+  const { device, usecases, events } = detail;
+
+  return (
+    <div className="space-y-5">
+      {/* Header mit Drucksymbolen */}
+      <DeviceHeader device={device} />
+
+      <div className="grid gap-4 md:grid-cols-[1.3fr,1.8fr]">
+        {/* UseCases */}
+        <Card className="border-slate-800 bg-slate-950/70">
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold">UseCases</div>
+                <div className="text-xs text-slate-400">
+                  Zuordnung Device &rarr; UseCase
+                </div>
+              </div>
+              <span className="text-[11px] text-slate-400">
+                {usecases.length} UseCase(s)
+              </span>
+            </div>
+            <div className="space-y-2">
+              {usecases.map((u: any) => (
+                <div
+                  key={u.usecase_id}
+                  className="rounded-md border border-slate-800 bg-slate-900/60 p-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <div className="text-xs font-medium">
+                        {u.usecase_name}
+                      </div>
+                      <div className="text-[11px] text-slate-400">
+                        {u.usecase_key} ·{" "}
+                        {u.usecase_category ?? "no category"}
+                      </div>
+                    </div>
+                    <Badge variant={u.mapping_enabled ? "default" : "outline"}>
+                      {u.mapping_enabled ? "active" : "inactive"}
+                    </Badge>
+                  </div>
+                  {u.effective_config && (
+                    <pre className="mt-2 text-[11px] text-slate-300 bg-slate-950/80 border border-slate-800 rounded p-2 max-h-32 overflow-auto">
+                      {JSON.stringify(u.effective_config, null, 2)}
+                    </pre>
+                  )}
+                </div>
+              ))}
+              {usecases.length === 0 && (
+                <div className="text-xs text-slate-500">
+                  Keine UseCases zugeordnet.
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Events */}
+        <Card className="border-slate-800 bg-slate-950/70">
+          <CardContent className="p-4 space-y-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold">
+                  Letzte Events (Device)
+                </div>
+                <div className="text-xs text-slate-400">
+                  Aus Tabelle <code>events</code> (entity_type=device)
+                </div>
+              </div>
+              <Link
+                href="/flows"
+                className="text-[11px] text-sky-400 hover:text-sky-300"
+              >
+                &rarr; Zu Flows
+              </Link>
+            </div>
+            <div className="space-y-2 max-h-80 overflow-auto text-xs">
+              {events.map((e: any) => (
+                <div
+                  key={e.event_id}
+                  className="rounded-md border border-slate-800 bg-slate-900/60 p-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-medium">{e.event_type}</div>
+                    <span className="text-[10px] text-slate-400">
+                      {new Date(e.ts).toLocaleTimeString("de-AT", {
+                        hour12: false,
+                      })}
+                    </span>
+                  </div>
+                  {e.message && (
+                    <div className="mt-1 text-[11px] text-slate-300">
+                      {e.message}
+                    </div>
+                  )}
+                  <div className="mt-1 flex flex-wrap gap-2 text-[10px] text-slate-400">
+                    {e.flow_id && <span>flow: {e.flow_id}</span>}
+                    {e.service_name && <span>svc: {e.service_name}</span>}
+                    {e.severity && <span>sev: {e.severity}</span>}
+                  </div>
+                </div>
+              ))}
+              {events.length === 0 && (
+                <div className="text-xs text-slate-500">
+                  Keine Events gefunden.
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+

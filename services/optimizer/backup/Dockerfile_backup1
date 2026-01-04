@@ -1,0 +1,19 @@
+# Basis so lassen, wenn ihr schon eine habt. Sonst:
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System-Update optional, aber hilfreich
+RUN pip install --no-cache-dir --upgrade pip
+
+# Dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# App
+COPY . .
+
+# Start
+ENV PORT=8000 HOST=0.0.0.0
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+

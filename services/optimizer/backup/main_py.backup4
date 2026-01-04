@@ -1,0 +1,121 @@
+import os
+import json
+import asyncio
+import contextlib
+import orjson
+import aio_pika
+from fastapi import FastAPI
+
+# ---------------------------------------------------------------------------
+# App-Konfiguration
+# ---------------------------------------------------------------------------
+APP = "optimizer"
+app = FastAPI(title=APP)
+
+RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://admin:admin@rabbitmq:5672/")
+QUEUE_IN = os.getenv("QUEUE_IN", "forecasts.out")
+
+# ---------------------------------------------------------------------------
+# Health Endpoint
+# ---------------------------------------------------------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": APP}
+
+@app.get("/ready")
+def ready():
+    return {"status": "ready", "service": APP}
+
+
+# ---------------------------------------------------------------------------
+# Message Handler
+# ---------------------------------------------------------------------------
+async def handle_message(msg: aio_pika.IncomingMessage):
+    async with msg.process(ignore_processed=True, requeue=True):
+        try:
+            payload_bytes = msg.body
+            data = orjson.loads(payload_bytes)
+
+            ts = data.get("ts")
+            target_ts = data.get("target_ts")
+            series = data.get("series")
+            q50 = float(data.get("q50")) if data.get("q50") is not None else None
+            backend = data.get("backend", "unknown")
+
+            # Logging / Demo-Ausgabe
+            print(f"[{APP}] Received forecast:")
+            print(f"  series    = {series}")
+            print(f"  target_ts = {target_ts}")
+            print(f"  q50       = {q50}")
+            print(f"  backend   = {backend}")
+            print(f"  ts        = {ts}")
+
+            # -------------------------------------------------------------------
+            # Hier: Business-Logik einbauen (z. B. Optimierungs-Engine)
+            # -------------------------------------------------------------------
+            # Beispiel (Pseudo):
+            # result = await optimize_forecast(series, q50)
+            # await publish_decision(result)
+            # -------------------------------------------------------------------
+
+        except Exception as e:
+            print(f"[{APP}] ERROR handling message: {e}")
+            raise  # sorgt für nack() + Requeue
+
+
+# ---------------------------------------------------------------------------
+# AMQP Consumer Setup
+# ---------------------------------------------------------------------------
+async def amqp_consumer():
+    print(f"[{APP}] Connecting to RabbitMQ: {RABBITMQ_URL}")
+    connection = await aio_pika.connect_robust(RABBITMQ_URL)
+    channel = await connection.channel()
+    await channel.set_qos(prefetch_count=10)
+
+    queue = await channel.declare_queue(
+        QUEUE_IN,
+        durable=True,
+        arguments={
+            # Optional: DLX / TTL
+            # "x-dead-letter-exchange": "dlx",
+            # "x-message-ttl": 600000,  # 10 Minuten
+        }
+    )
+
+    await queue.consume(handle_message, no_ack=False)
+    print(f"[{APP}] Started consuming from queue '{QUEUE_IN}'")
+
+    try:
+        while True:
+            await asyncio.sleep(3600)
+    finally:
+        await connection.close()
+        print(f"[{APP}] RabbitMQ connection closed.")
+
+
+# ---------------------------------------------------------------------------
+# FastAPI Startup / Shutdown Events
+# ---------------------------------------------------------------------------
+@app.on_event("startup")
+async def on_startup():
+    print(f"[{APP}] Startup event – launching AMQP consumer...")
+    app.state.consumer_task = asyncio.create_task(amqp_consumer())
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    print(f"[{APP}] Shutdown event – stopping consumer...")
+    task = getattr(app.state, "consumer_task", None)
+    if task:
+        task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await task
+    print(f"[{APP}] Shutdown complete.")
+
+
+# ---------------------------------------------------------------------------
+# Optional: Lokaler Start (nur für Debug außerhalb Docker)
+# ---------------------------------------------------------------------------
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+

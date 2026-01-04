@@ -1,0 +1,134 @@
+// components/flow/flows-live-list.tsx
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { FlowSummary } from "@/lib/api";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+
+interface Props {
+  initialFlows: FlowSummary[];
+  hours: number;
+  deviceId?: string;
+  apiBaseUrl: string;
+}
+
+export function FlowsLiveList({ initialFlows, hours, deviceId, apiBaseUrl }: Props) {
+  const [flows, setFlows] = useState<FlowSummary[]>(initialFlows);
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // gefilterte Flows (nach deviceId)
+  const filteredFlows = useMemo(() => {
+    if (!deviceId) return flows;
+    return flows.filter((f) => f.primary_device_id === deviceId);
+  }, [flows, deviceId]);
+
+  async function reload() {
+    try {
+      setLoading(true);
+      const url = `${apiBaseUrl}/api/flows?hours=${hours}`;
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = (await res.json()) as FlowSummary[];
+      setFlows(data);
+    } catch (e) {
+      console.error("reload flows failed", e);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const id = setInterval(() => {
+      reload();
+    }, 5000);
+    return () => clearInterval(id);
+  }, [autoRefresh, hours]);
+
+  return (
+    <div className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3 text-xs text-slate-400">
+          <span>
+            Zeitraum: letzte {hours}h
+            {deviceId && (
+              <>
+                {" "}
+                · Device: <span className="font-mono">{deviceId}</span>
+              </>
+            )}
+          </span>
+          <span>
+            Flows: {filteredFlows.length}{" "}
+            {deviceId && ` (gefiltert aus ${flows.length})`}
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-xs">
+          <label className="inline-flex items-center gap-1 text-slate-300 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={autoRefresh}
+              onChange={(e) => setAutoRefresh(e.target.checked)}
+              className="h-3 w-3"
+            />
+            Auto-Refresh (5s)
+          </label>
+          <button
+            onClick={reload}
+            className="rounded-full border border-slate-700 px-3 py-1 text-[11px] text-slate-200 hover:border-sky-500 hover:text-white transition-colors"
+          >
+            {loading ? "Reload …" : "Reload"}
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        {filteredFlows.map((f) => (
+          <Link key={f.flow_id} href={`/flows/${encodeURIComponent(f.flow_id)}`}>
+            <Card className="border-slate-800 bg-slate-950/70 hover:border-sky-500/70 hover:bg-slate-900/70 transition-colors cursor-pointer">
+              <CardContent className="p-3 text-xs flex flex-col gap-1">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="font-mono text-[11px] text-slate-300 truncate max-w-[60%]">
+                    {f.flow_id}
+                  </div>
+                  <Badge variant="outline">
+                    {f.primary_device_id ?? "no device"}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
+                  <span>
+                    {new Date(f.started_at).toLocaleTimeString("de-AT", {
+                      hour12: false,
+                    })}{" "}
+                    –{" "}
+                    {new Date(f.ended_at).toLocaleTimeString("de-AT", {
+                      hour12: false,
+                    })}
+                  </span>
+                  {f.duration_seconds !== null && (
+                    <span>· {f.duration_seconds}s</span>
+                  )}
+                  <span>· {f.event_count} Events</span>
+                  {f.services_involved && f.services_involved.length > 0 && (
+                    <span className="truncate">
+                      · {f.services_involved.filter(Boolean).join(" / ")}
+                    </span>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+        {filteredFlows.length === 0 && (
+          <div className="text-xs text-slate-500">
+            Keine Flows im aktuellen Filter gefunden.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+

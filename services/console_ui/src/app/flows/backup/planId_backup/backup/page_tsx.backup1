@@ -1,0 +1,120 @@
+// src/app/flows/[planId]/page.tsx
+import { notFound } from "next/navigation";
+import { getFlowByPlanId, Flow } from "@/lib/flows";
+import { FlowInspectorLive } from "./flow-inspector-live";
+
+type Props = {
+  params: { planId: string };
+};
+
+export default async function FlowInspectorPage({ params }: Props) {
+  const planId = decodeURIComponent(params.planId);
+  const flow = await getFlowByPlanId(planId);
+
+  if (!flow) {
+    notFound();
+  }
+
+  return (
+    <div className="px-6 py-4 space-y-6">
+      <header className="flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            Flow-Inspector: <span className="text-emerald-400">{planId}</span>
+          </h1>
+          <p className="text-sm text-slate-400">
+            Device <span className="font-mono">{flow.device}</span> · Usecase{" "}
+            <span className="font-mono">{flow.usecase}</span>
+          </p>
+        </div>
+        <FlowStatusBadge status={flow.status} />
+      </header>
+
+      <FlowTimelineCard flow={flow} />
+
+      <FlowInspectorLive planId={planId} />
+
+      <RawJsonCard flow={flow} />
+    </div>
+  );
+}
+
+function FlowStatusBadge({ status }: { status?: string }) {
+  if (!status) {
+    return (
+      <span className="inline-flex items-center rounded-full border border-slate-600 px-3 py-1 text-xs text-slate-300">
+        unknown
+      </span>
+    );
+  }
+
+  const color =
+    status === "active"
+      ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+      : status === "finished"
+      ? "bg-slate-500/20 text-slate-200 border-slate-500/40"
+      : "bg-amber-500/20 text-amber-300 border-amber-500/40";
+
+  return (
+    <span
+      className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${color}`}
+    >
+      ● {status}
+    </span>
+  );
+}
+
+function FlowTimelineCard({ flow }: { flow: Flow }) {
+  const windows = flow.window ?? [];
+
+  return (
+    <section className="border border-slate-800 rounded-xl p-4 space-y-3 bg-slate-950/50">
+      <h2 className="text-sm font-semibold text-slate-100">
+        Zeitfenster & Leistung
+      </h2>
+      <p className="text-xs text-slate-400">
+        Power: <span className="font-mono">{flow.power_kw} kW</span> · Start-Timestamp:{" "}
+        <span className="font-mono">{flow.ts}</span>
+      </p>
+
+      <div className="space-y-2">
+        {windows.length === 0 && (
+          <p className="text-xs text-slate-500">Keine Zeitfenster definiert.</p>
+        )}
+
+        {windows.map(([start, end], idx) => (
+          <div key={idx} className="space-y-1">
+            <div className="flex justify-between text-[11px] text-slate-400">
+              <span>Window {idx + 1}</span>
+              <span className="font-mono">
+                {start} → {end}
+              </span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+              <div className="h-full w-1/3 bg-emerald-500/70" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function RawJsonCard({ flow }: { flow: Flow }) {
+  return (
+    <section className="border border-slate-800 rounded-xl bg-black p-4 space-y-2">
+      <div className="flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-slate-100">
+          Raw JSON (Flow-Daten)
+        </h2>
+        <span className="text-[11px] text-slate-500">
+          perfekt für Debugging & Logging
+        </span>
+      </div>
+      <pre className="text-xs leading-relaxed text-emerald-200 bg-slate-950 rounded-lg p-3 overflow-auto max-h-[420px]">
+        {JSON.stringify(flow, null, 2)}
+      </pre>
+    </section>
+  );
+}
+

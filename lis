@@ -1,0 +1,2823 @@
+timescaledb-1  | The files belonging to this database system will be owned by user "postgres".
+timescaledb-1  | This user must also own the server process.
+timescaledb-1  | 
+timescaledb-1  | The database cluster will be initialized with locale "C.UTF-8".
+timescaledb-1  | The default database encoding has accordingly been set to "UTF8".
+timescaledb-1  | The default text search configuration will be set to "english".
+timescaledb-1  | 
+timescaledb-1  | Data page checksums are disabled.
+timescaledb-1  | 
+timescaledb-1  | fixing permissions on existing directory /home/postgres/pgdata/data ... ok
+timescaledb-1  | creating subdirectories ... ok
+timescaledb-1  | selecting dynamic shared memory implementation ... posix
+timescaledb-1  | selecting default "max_connections" ... 100
+timescaledb-1  | selecting default "shared_buffers" ... 128MB
+timescaledb-1  | selecting default time zone ... Etc/UTC
+timescaledb-1  | creating configuration files ... ok
+timescaledb-1  | running bootstrap script ... ok
+timescaledb-1  | performing post-bootstrap initialization ... ok
+timescaledb-1  | initdb: warning: enabling "trust" authentication for local connections
+timescaledb-1  | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+timescaledb-1  | syncing data to disk ... ok
+timescaledb-1  | 
+timescaledb-1  | 
+timescaledb-1  | Success. You can now start the database server using:
+timescaledb-1  | 
+timescaledb-1  |     pg_ctl -D /home/postgres/pgdata/data -l logfile start
+timescaledb-1  | 
+timescaledb-1  | waiting for server to start....2026-01-03 08:42:29.786 UTC [38] LOG:  starting PostgreSQL 17.7 (Ubuntu 17.7-3.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, 64-bit
+timescaledb-1  | 2026-01-03 08:42:29.788 UTC [38] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+timescaledb-1  | 2026-01-03 08:42:29.794 UTC [41] LOG:  database system was shut down at 2026-01-03 08:42:28 UTC
+timescaledb-1  | 2026-01-03 08:42:29.806 UTC [38] LOG:  database system is ready to accept connections
+timescaledb-1  | 2026-01-03 08:42:29.809 UTC [44] LOG:  TimescaleDB background worker launcher connected to shared catalogs
+timescaledb-1  |  done
+timescaledb-1  | server started
+timescaledb-1  | CREATE DATABASE
+timescaledb-1  | 
+timescaledb-1  | 
+timescaledb-1  | /docker-entrypoint.sh: running /docker-entrypoint-initdb.d/001_recreate_energy.sql
+timescaledb-1  | CREATE EXTENSION
+timescaledb-1  | CREATE TABLE
+timescaledb-1  |      create_hypertable     
+timescaledb-1  | ---------------------------
+timescaledb-1  |  (1,public,measurements,t)
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | CREATE TABLE
+timescaledb-1  |    create_hypertable    
+timescaledb-1  | ------------------------
+timescaledb-1  |  (2,public,forecasts,t)
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | CREATE TABLE
+timescaledb-1  |    create_hypertable    
+timescaledb-1  | ------------------------
+timescaledb-1  |  (3,public,decisions,t)
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | DO
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | CREATE TABLE
+timescaledb-1  | DO
+timescaledb-1  | DO
+timescaledb-1  | DO
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/001_recreate_energy.sql:96: NOTICE:  continuous aggregate "decisions_5m" is already up-to-date
+timescaledb-1  | CREATE MATERIALIZED VIEW
+timescaledb-1  | DO
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/001_recreate_energy.sql:117: NOTICE:  continuous aggregate "forecasts_5m" is already up-to-date
+timescaledb-1  | CREATE MATERIALIZED VIEW
+timescaledb-1  | DO
+timescaledb-1  | CREATE VIEW
+timescaledb-1  | CREATE VIEW
+timescaledb-1  | 
+timescaledb-1  | 
+timescaledb-1  | /docker-entrypoint.sh: running /docker-entrypoint-initdb.d/002_restore_schema.sql
+timescaledb-1  | 2026-01-03 08:42:30.171 UTC [61] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-01 08:45:00+00, 2026-01-03 08:40:00+00 ]
+timescaledb-1  | 2026-01-03 08:42:30.172 UTC [61] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:42:30.174 UTC [61] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:7: NOTICE:  extension "timescaledb" already exists, skipping
+timescaledb-1  | CREATE EXTENSION
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:18: NOTICE:  relation "measurements" already exists, skipping
+timescaledb-1  | CREATE TABLE
+timescaledb-1  | 2026-01-03 08:42:30.182 UTC [62] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-01 08:45:00+00, 2026-01-03 08:40:00+00 ]
+timescaledb-1  | 2026-01-03 08:42:30.183 UTC [62] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:42:30.184 UTC [62] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  |      create_hypertable     
+timescaledb-1  | ---------------------------
+timescaledb-1  |  (1,public,measurements,f)
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:19: NOTICE:  table "measurements" is already a hypertable, skipping
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:20: NOTICE:  relation "ix_measurements_src_key_ts" already exists, skipping
+timescaledb-1  | CREATE TABLE
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:32: NOTICE:  relation "forecasts" already exists, skipping
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:33: NOTICE:  table "forecasts" is already a hypertable, skipping
+timescaledb-1  |    create_hypertable    
+timescaledb-1  | ------------------------
+timescaledb-1  |  (2,public,forecasts,f)
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:34: NOTICE:  relation "ix_forecasts_target" already exists, skipping
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:35: NOTICE:  relation "ix_forecasts_series_ts" already exists, skipping
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:45: NOTICE:  relation "decisions" already exists, skipping
+timescaledb-1  | CREATE TABLE
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:46: NOTICE:  table "decisions" is already a hypertable, skipping
+timescaledb-1  |    create_hypertable    
+timescaledb-1  | ------------------------
+timescaledb-1  |  (3,public,decisions,f)
+timescaledb-1  | (1 row)
+timescaledb-1  | 
+timescaledb-1  | DO
+timescaledb-1  | CREATE INDEX
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:61: NOTICE:  relation "ix_decisions_target_device" already exists, skipping
+timescaledb-1  | CREATE TABLE
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:70: NOTICE:  relation "applications" already exists, skipping
+timescaledb-1  | psql:/docker-entrypoint-initdb.d/002_restore_schema.sql:75: ERROR:  syntax error at or near "#"
+timescaledb-1  | LINE 1: #SELECT add_retention_policy('measurements', INTERVAL '30 da...
+timescaledb-1  |         ^
+timescaledb-1  | 2026-01-03 08:42:30.196 UTC [63] ERROR:  syntax error at or near "#" at character 1
+timescaledb-1  | 2026-01-03 08:42:30.196 UTC [63] STATEMENT:  #SELECT add_retention_policy('measurements', INTERVAL '30 days')
+timescaledb-1  | 	#  ON CONFLICT DO NOTHING;
+timescaledb-1  | 
+timescaledb-1  | PostgreSQL Database directory appears to contain a database; Skipping initialization
+timescaledb-1  | 
+timescaledb-1  | 2026-01-03 08:42:45.359 UTC [1] LOG:  starting PostgreSQL 17.7 (Ubuntu 17.7-3.pgdg22.04+1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 11.4.0-1ubuntu1~22.04.2) 11.4.0, 64-bit
+timescaledb-1  | 2026-01-03 08:42:45.359 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+timescaledb-1  | 2026-01-03 08:42:45.359 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+timescaledb-1  | 2026-01-03 08:42:45.361 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+timescaledb-1  | 2026-01-03 08:42:45.367 UTC [21] LOG:  database system was interrupted; last known up at 2026-01-03 08:42:29 UTC
+timescaledb-1  | 2026-01-03 08:42:45.537 UTC [21] LOG:  database system was not properly shut down; automatic recovery in progress
+timescaledb-1  | 2026-01-03 08:42:45.540 UTC [21] LOG:  redo starts at 0/14E2888
+timescaledb-1  | 2026-01-03 08:42:45.576 UTC [21] LOG:  invalid record length at 0/1A97DA8: expected at least 24, got 0
+timescaledb-1  | 2026-01-03 08:42:45.576 UTC [21] LOG:  redo done at 0/1A97D80 system usage: CPU: user: 0.01 s, system: 0.02 s, elapsed: 0.03 s
+timescaledb-1  | 2026-01-03 08:42:45.582 UTC [19] LOG:  checkpoint starting: end-of-recovery immediate wait
+timescaledb-1  | 2026-01-03 08:42:45.876 UTC [19] LOG:  checkpoint complete: wrote 1172 buffers (7.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.021 s, sync=0.268 s, total=0.295 s; sync files=435, longest=0.004 s, average=0.001 s; distance=5845 kB, estimate=5845 kB; lsn=0/1A97DA8, redo lsn=0/1A97DA8
+timescaledb-1  | 2026-01-03 08:42:45.887 UTC [1] LOG:  database system is ready to accept connections
+timescaledb-1  | 2026-01-03 08:42:45.889 UTC [24] LOG:  TimescaleDB background worker launcher connected to shared catalogs
+timescaledb-1  | 2026-01-03 08:43:56.703 UTC [87] ERROR:  cannot create a unique index without the column "target_ts" (used in partitioning)
+timescaledb-1  | 2026-01-03 08:43:56.703 UTC [87] HINT:  If you're creating a hypertable on a table with a primary key, ensure the partitioning column is part of the primary or composite key.
+timescaledb-1  | 2026-01-03 08:43:56.703 UTC [87] STATEMENT:  
+timescaledb-1  | 	SELECT create_hypertable('optimizer_input', 'target_ts', if_not_exists => TRUE);
+timescaledb-1  | 	
+timescaledb-1  | 2026-01-03 08:45:58.484 UTC [201] ERROR:  cannot create a unique index without the column "target_ts" (used in partitioning)
+timescaledb-1  | 2026-01-03 08:45:58.484 UTC [201] HINT:  If you're creating a hypertable on a table with a primary key, ensure the partitioning column is part of the primary or composite key.
+timescaledb-1  | 2026-01-03 08:45:58.484 UTC [201] STATEMENT:  
+timescaledb-1  | 	SELECT create_hypertable('router_actions', 'target_ts', if_not_exists => TRUE);
+timescaledb-1  | 	
+timescaledb-1  | 2026-01-03 08:46:30.231 UTC [236] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-03 08:40:00+00, 2026-01-03 08:45:00+00 ]
+timescaledb-1  | 2026-01-03 08:46:30.233 UTC [236] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:46:30.234 UTC [236] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:46:30.254 UTC [237] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-03 08:40:00+00, 2026-01-03 08:45:00+00 ]
+timescaledb-1  | 2026-01-03 08:46:30.255 UTC [237] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:46:30.257 UTC [237] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:47:45.956 UTC [19] LOG:  checkpoint starting: time
+timescaledb-1  | 2026-01-03 08:47:59.129 UTC [19] LOG:  checkpoint complete: wrote 132 buffers (0.8%); 0 WAL file(s) added, 0 removed, 0 recycled; write=13.143 s, sync=0.026 s, total=13.174 s; sync files=69, longest=0.002 s, average=0.001 s; distance=282 kB, estimate=5289 kB; lsn=0/1ADE678, redo lsn=0/1ADE5E8
+timescaledb-1  | 2026-01-03 08:49:02.157 UTC [367] ERROR:  column "series" of relation "measurements" does not exist at character 44
+timescaledb-1  | 2026-01-03 08:49:02.157 UTC [367] STATEMENT:  
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T00:00', 'weather:temp_c',  -0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T01:00', 'weather:temp_c',  -0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T02:00', 'weather:temp_c',  -0.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T03:00', 'weather:temp_c',  -0.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T04:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T05:00', 'weather:temp_c',  -1.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T06:00', 'weather:temp_c',  -2.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T07:00', 'weather:temp_c',  -3.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T08:00', 'weather:temp_c',  -3.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T09:00', 'weather:temp_c',  -2.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T10:00', 'weather:temp_c',  -0.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T11:00', 'weather:temp_c', 0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T12:00', 'weather:temp_c', 1.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T13:00', 'weather:temp_c', 1.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T14:00', 'weather:temp_c', 1.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T15:00', 'weather:temp_c', 1.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T16:00', 'weather:temp_c', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T17:00', 'weather:temp_c', 0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T18:00', 'weather:temp_c', 0.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T19:00', 'weather:temp_c', 0.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T20:00', 'weather:temp_c', 0.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T21:00', 'weather:temp_c', 0.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T22:00', 'weather:temp_c',  -0.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T23:00', 'weather:temp_c',  -0.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T00:00', 'weather:temp_c',  -0.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T01:00', 'weather:temp_c',  -0.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T02:00', 'weather:temp_c',  -1.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T03:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T04:00', 'weather:temp_c',  -1.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T05:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T06:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T07:00', 'weather:temp_c',  -1.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T08:00', 'weather:temp_c',  -1.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T09:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T10:00', 'weather:temp_c',  -0.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T11:00', 'weather:temp_c', 0.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T12:00', 'weather:temp_c', 0.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T13:00', 'weather:temp_c', 1.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T14:00', 'weather:temp_c', 0.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T15:00', 'weather:temp_c', 0.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T16:00', 'weather:temp_c',  -0.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T17:00', 'weather:temp_c',  -0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T18:00', 'weather:temp_c',  -1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T19:00', 'weather:temp_c',  -1.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T20:00', 'weather:temp_c',  -2.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T21:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T22:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T23:00', 'weather:temp_c',  -2.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T00:00', 'weather:temp_c',  -2.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T01:00', 'weather:temp_c',  -2.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T02:00', 'weather:temp_c',  -2.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T03:00', 'weather:temp_c',  -2.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T04:00', 'weather:temp_c',  -3.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T05:00', 'weather:temp_c',  -3.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T06:00', 'weather:temp_c',  -4.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T07:00', 'weather:temp_c',  -4.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T08:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T09:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T10:00', 'weather:temp_c',  -2.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T11:00', 'weather:temp_c',  -1.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T12:00', 'weather:temp_c',  -1.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T13:00', 'weather:temp_c',  -1.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T14:00', 'weather:temp_c',  -1.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T15:00', 'weather:temp_c',  -1.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T16:00', 'weather:temp_c',  -1.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T17:00', 'weather:temp_c',  -1.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T18:00', 'weather:temp_c',  -2.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T19:00', 'weather:temp_c',  -2.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T20:00', 'weather:temp_c',  -2.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T21:00', 'weather:temp_c',  -2.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T22:00', 'weather:temp_c',  -3.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T23:00', 'weather:temp_c',  -3.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T00:00', 'weather:temp_c',  -3.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T01:00', 'weather:temp_c',  -3.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T02:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T03:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T04:00', 'weather:temp_c',  -3.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T05:00', 'weather:temp_c',  -3.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T06:00', 'weather:temp_c',  -3.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T07:00', 'weather:temp_c',  -3.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T08:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T09:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T10:00', 'weather:temp_c',  -3.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T11:00', 'weather:temp_c',  -2.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T12:00', 'weather:temp_c',  -2.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T13:00', 'weather:temp_c',  -2.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T14:00', 'weather:temp_c',  -2.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T15:00', 'weather:temp_c',  -2.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T16:00', 'weather:temp_c',  -3.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T17:00', 'weather:temp_c',  -3.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T18:00', 'weather:temp_c',  -4.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T19:00', 'weather:temp_c',  -4.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T20:00', 'weather:temp_c',  -4.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T21:00', 'weather:temp_c',  -4.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T22:00', 'weather:temp_c',  -4.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T23:00', 'weather:temp_c',  -4.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T00:00', 'weather:temp_c',  -4.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T01:00', 'weather:temp_c',  -4.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T02:00', 'weather:temp_c',  -5.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T03:00', 'weather:temp_c',  -5.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T04:00', 'weather:temp_c',  -5.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T05:00', 'weather:temp_c',  -5.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T06:00', 'weather:temp_c',  -5.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T07:00', 'weather:temp_c',  -5.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T08:00', 'weather:temp_c',  -4.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T09:00', 'weather:temp_c',  -4.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T10:00', 'weather:temp_c',  -4.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T11:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T12:00', 'weather:temp_c',  -3.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T13:00', 'weather:temp_c',  -3.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T14:00', 'weather:temp_c',  -3.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T15:00', 'weather:temp_c',  -3.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T16:00', 'weather:temp_c',  -3.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T17:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T18:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T19:00', 'weather:temp_c',  -4.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T20:00', 'weather:temp_c',  -4.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T21:00', 'weather:temp_c',  -4.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T22:00', 'weather:temp_c',  -4.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T23:00', 'weather:temp_c',  -4.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T00:00', 'weather:temp_c',  -4.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T01:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T02:00', 'weather:temp_c',  -4.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T03:00', 'weather:temp_c',  -4.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T04:00', 'weather:temp_c',  -4.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T05:00', 'weather:temp_c',  -4.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T06:00', 'weather:temp_c',  -4.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T07:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T08:00', 'weather:temp_c',  -3.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T09:00', 'weather:temp_c',  -3.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T10:00', 'weather:temp_c',  -2.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T11:00', 'weather:temp_c',  -2.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T12:00', 'weather:temp_c',  -1.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T13:00', 'weather:temp_c',  -2.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T14:00', 'weather:temp_c',  -2.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T15:00', 'weather:temp_c',  -2.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T16:00', 'weather:temp_c',  -2.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T17:00', 'weather:temp_c',  -3.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T18:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T19:00', 'weather:temp_c',  -3.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T20:00', 'weather:temp_c',  -3.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T21:00', 'weather:temp_c',  -2.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T22:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T23:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T00:00', 'weather:temp_c',  -3.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T01:00', 'weather:temp_c',  -3.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T02:00', 'weather:temp_c',  -3.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T03:00', 'weather:temp_c',  -4.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T04:00', 'weather:temp_c',  -4.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T05:00', 'weather:temp_c',  -5.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T06:00', 'weather:temp_c',  -5.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T07:00', 'weather:temp_c',  -5.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T08:00', 'weather:temp_c',  -4.4)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T09:00', 'weather:temp_c',  -3.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T10:00', 'weather:temp_c',  -2.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T11:00', 'weather:temp_c',  -1.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T12:00', 'weather:temp_c',  -0.6)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T13:00', 'weather:temp_c',  -0.7)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T14:00', 'weather:temp_c',  -1.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T15:00', 'weather:temp_c',  -1.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T16:00', 'weather:temp_c',  -2.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T17:00', 'weather:temp_c',  -4.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T18:00', 'weather:temp_c',  -5.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T19:00', 'weather:temp_c',  -5.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T20:00', 'weather:temp_c',  -5.9)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T21:00', 'weather:temp_c',  -6.1)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T22:00', 'weather:temp_c',  -6.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T23:00', 'weather:temp_c',  -6.3)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T07:00', 'weather:shortwave_radiation_wm2', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T08:00', 'weather:shortwave_radiation_wm2', 55.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T09:00', 'weather:shortwave_radiation_wm2', 163.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T10:00', 'weather:shortwave_radiation_wm2', 255.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T11:00', 'weather:shortwave_radiation_wm2', 307.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T12:00', 'weather:shortwave_radiation_wm2', 308.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T13:00', 'weather:shortwave_radiation_wm2', 242.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T14:00', 'weather:shortwave_radiation_wm2', 126.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T15:00', 'weather:shortwave_radiation_wm2', 34.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T16:00', 'weather:shortwave_radiation_wm2', 1.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T07:00', 'weather:shortwave_radiation_wm2', 0.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T08:00', 'weather:shortwave_radiation_wm2', 48.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T09:00', 'weather:shortwave_radiation_wm2', 162.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T10:00', 'weather:shortwave_radiation_wm2', 257.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T11:00', 'weather:shortwave_radiation_wm2', 312.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T12:00', 'weather:shortwave_radiation_wm2', 314.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T13:00', 'weather:shortwave_radiation_wm2', 268.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T14:00', 'weather:shortwave_radiation_wm2', 176.8)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T15:00', 'weather:shortwave_radiation_wm2', 66.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T16:00', 'weather:shortwave_radiation_wm2', 2.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T07:00', 'weather:shortwave_radiation_wm2', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T08:00', 'weather:shortwave_radiation_wm2', 39.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T09:00', 'weather:shortwave_radiation_wm2', 83.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T10:00', 'weather:shortwave_radiation_wm2', 122.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T11:00', 'weather:shortwave_radiation_wm2', 140.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T12:00', 'weather:shortwave_radiation_wm2', 139.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T13:00', 'weather:shortwave_radiation_wm2', 114.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T14:00', 'weather:shortwave_radiation_wm2', 85.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T15:00', 'weather:shortwave_radiation_wm2', 35.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T16:00', 'weather:shortwave_radiation_wm2', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T07:00', 'weather:shortwave_radiation_wm2', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T08:00', 'weather:shortwave_radiation_wm2', 16.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T09:00', 'weather:shortwave_radiation_wm2', 37.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T10:00', 'weather:shortwave_radiation_wm2', 53.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T11:00', 'weather:shortwave_radiation_wm2', 63.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T12:00', 'weather:shortwave_radiation_wm2', 67.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T13:00', 'weather:shortwave_radiation_wm2', 69.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T14:00', 'weather:shortwave_radiation_wm2', 59.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T15:00', 'weather:shortwave_radiation_wm2', 29.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T16:00', 'weather:shortwave_radiation_wm2', 3.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T07:00', 'weather:shortwave_radiation_wm2', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T08:00', 'weather:shortwave_radiation_wm2', 20.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T09:00', 'weather:shortwave_radiation_wm2', 47.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T10:00', 'weather:shortwave_radiation_wm2', 71.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T11:00', 'weather:shortwave_radiation_wm2', 91.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T12:00', 'weather:shortwave_radiation_wm2', 95.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T13:00', 'weather:shortwave_radiation_wm2', 81.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T14:00', 'weather:shortwave_radiation_wm2', 54.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T15:00', 'weather:shortwave_radiation_wm2', 23.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T16:00', 'weather:shortwave_radiation_wm2', 2.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T07:00', 'weather:shortwave_radiation_wm2', 2.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T08:00', 'weather:shortwave_radiation_wm2', 35.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T09:00', 'weather:shortwave_radiation_wm2', 81.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T10:00', 'weather:shortwave_radiation_wm2', 132.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T11:00', 'weather:shortwave_radiation_wm2', 179.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T12:00', 'weather:shortwave_radiation_wm2', 198.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T13:00', 'weather:shortwave_radiation_wm2', 174.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T14:00', 'weather:shortwave_radiation_wm2', 122.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T15:00', 'weather:shortwave_radiation_wm2', 55.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T16:00', 'weather:shortwave_radiation_wm2', 7.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T00:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T01:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T02:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T03:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T04:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T05:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T06:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T07:00', 'weather:shortwave_radiation_wm2', 5.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T08:00', 'weather:shortwave_radiation_wm2', 72.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T09:00', 'weather:shortwave_radiation_wm2', 164.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T10:00', 'weather:shortwave_radiation_wm2', 246.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T11:00', 'weather:shortwave_radiation_wm2', 309.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T12:00', 'weather:shortwave_radiation_wm2', 327.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T13:00', 'weather:shortwave_radiation_wm2', 291.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T14:00', 'weather:shortwave_radiation_wm2', 212.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T15:00', 'weather:shortwave_radiation_wm2', 98.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T16:00', 'weather:shortwave_radiation_wm2', 12.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T17:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T18:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T19:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T20:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T21:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T22:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T23:00', 'weather:shortwave_radiation_wm2', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T00:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T01:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T02:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T04:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T05:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T06:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T07:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T08:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T09:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T10:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T11:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T12:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T13:00', 'weather:cloud_cover_pct', 91.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T14:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T15:00', 'weather:cloud_cover_pct', 93.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T16:00', 'weather:cloud_cover_pct', 91.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T17:00', 'weather:cloud_cover_pct', 96.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T18:00', 'weather:cloud_cover_pct', 96.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T19:00', 'weather:cloud_cover_pct', 96.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T20:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T21:00', 'weather:cloud_cover_pct', 94.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T22:00', 'weather:cloud_cover_pct', 92.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-03T23:00', 'weather:cloud_cover_pct', 71.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T00:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T01:00', 'weather:cloud_cover_pct', 90.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T02:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T04:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T05:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T06:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T07:00', 'weather:cloud_cover_pct', 93.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T08:00', 'weather:cloud_cover_pct', 75.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T09:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T10:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T11:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T12:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T13:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T14:00', 'weather:cloud_cover_pct', 22.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T15:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T16:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T17:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T18:00', 'weather:cloud_cover_pct', 39.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T19:00', 'weather:cloud_cover_pct', 30.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T20:00', 'weather:cloud_cover_pct', 52.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T21:00', 'weather:cloud_cover_pct', 67.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T22:00', 'weather:cloud_cover_pct', 90.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-04T23:00', 'weather:cloud_cover_pct', 89.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T00:00', 'weather:cloud_cover_pct', 86.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T01:00', 'weather:cloud_cover_pct', 85.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T02:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T04:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T05:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T06:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T07:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T08:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T09:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T10:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T11:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T12:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T13:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T14:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T15:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T16:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T17:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T18:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T19:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T20:00', 'weather:cloud_cover_pct', 95.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T21:00', 'weather:cloud_cover_pct', 89.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T22:00', 'weather:cloud_cover_pct', 83.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-05T23:00', 'weather:cloud_cover_pct', 83.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T00:00', 'weather:cloud_cover_pct', 86.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T01:00', 'weather:cloud_cover_pct', 95.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T02:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T04:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T05:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T06:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T07:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T08:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T09:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T10:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T11:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T12:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T13:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T14:00', 'weather:cloud_cover_pct', 94.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T15:00', 'weather:cloud_cover_pct', 91.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T16:00', 'weather:cloud_cover_pct', 94.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T17:00', 'weather:cloud_cover_pct', 97.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T18:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T19:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T20:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T21:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T22:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-06T23:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T00:00', 'weather:cloud_cover_pct', 98.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T01:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T02:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T04:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T05:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T06:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T07:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T08:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T09:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T10:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T11:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T12:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T13:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T14:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T15:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T16:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T17:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T18:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T19:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T20:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T21:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T22:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-07T23:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T00:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T01:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T02:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T03:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T04:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T05:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T06:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T07:00', 'weather:cloud_cover_pct', 99.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T08:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T09:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T10:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T11:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T12:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T13:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T14:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T15:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T16:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T17:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T18:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T19:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T20:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T21:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T22:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-08T23:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T00:00', 'weather:cloud_cover_pct', 100.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T01:00', 'weather:cloud_cover_pct', 96.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T02:00', 'weather:cloud_cover_pct', 93.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T03:00', 'weather:cloud_cover_pct', 89.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T04:00', 'weather:cloud_cover_pct', 60.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T05:00', 'weather:cloud_cover_pct', 30.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T06:00', 'weather:cloud_cover_pct', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T07:00', 'weather:cloud_cover_pct', 1.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T08:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T09:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T10:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T11:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T12:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T13:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T14:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T15:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T16:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T17:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T18:00', 'weather:cloud_cover_pct', 0.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T19:00', 'weather:cloud_cover_pct', 31.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T20:00', 'weather:cloud_cover_pct', 62.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T21:00', 'weather:cloud_cover_pct', 93.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T22:00', 'weather:cloud_cover_pct', 95.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES ('2026-01-09T23:00', 'weather:cloud_cover_pct', 98.0)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 08:49:41.433 UTC [402] ERROR:  column "series" of relation "measurements" does not exist at character 44
+timescaledb-1  | 2026-01-03 08:49:41.433 UTC [402] STATEMENT:  
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767427200.0), 'price:awattar_eur_mwh', 94.09)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767430800.0), 'price:awattar_eur_mwh', 93.31)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767434400.0), 'price:awattar_eur_mwh', 88.71)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767438000.0), 'price:awattar_eur_mwh', 87.41)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767441600.0), 'price:awattar_eur_mwh', 86.61)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767445200.0), 'price:awattar_eur_mwh', 91.03)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767448800.0), 'price:awattar_eur_mwh', 108.67)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767452400.0), 'price:awattar_eur_mwh', 113.82)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767456000.0), 'price:awattar_eur_mwh', 112.5)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767459600.0), 'price:awattar_eur_mwh', 114.2)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767463200.0), 'price:awattar_eur_mwh', 114.82)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767466800.0), 'price:awattar_eur_mwh', 115.48)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767470400.0), 'price:awattar_eur_mwh', 108.63)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767474000.0), 'price:awattar_eur_mwh', 99.62)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            ;
+timescaledb-1  | 	            INSERT INTO measurements (ts, series, value)
+timescaledb-1  | 	            VALUES (to_timestamp(1767477600.0), 'price:awattar_eur_mwh', 86.71)
+timescaledb-1  | 	            ON CONFLICT (ts, series)
+timescaledb-1  | 	            DO UPDATE SET value = EXCLUDED.value
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 08:50:41.988 UTC [456] ERROR:  relation "measurements_histo" does not exist at character 48
+timescaledb-1  | 2026-01-03 08:50:41.988 UTC [456] STATEMENT:  
+timescaledb-1  | 	            SELECT ts, value
+timescaledb-1  | 	            FROM measurements_histo
+timescaledb-1  | 	            WHERE series='meter1:load_kw'
+timescaledb-1  | 	            ORDER BY ts DESC
+timescaledb-1  | 	            LIMIT 1
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 08:51:31.363 UTC [499] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-03 08:45:00+00, 2026-01-03 08:50:00+00 ]
+timescaledb-1  | 2026-01-03 08:51:31.365 UTC [499] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:51:31.366 UTC [499] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:52:30.299 UTC [551] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-03 08:45:00+00, 2026-01-03 08:50:00+00 ]
+timescaledb-1  | 2026-01-03 08:52:30.300 UTC [551] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:52:30.302 UTC [551] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:52:45.141 UTC [19] LOG:  checkpoint starting: time
+timescaledb-1  | 2026-01-03 08:52:50.080 UTC [19] LOG:  checkpoint complete: wrote 50 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.916 s, sync=0.018 s, total=4.940 s; sync files=51, longest=0.002 s, average=0.001 s; distance=230 kB, estimate=4783 kB; lsn=0/1B18020, redo lsn=0/1B17FB0
+timescaledb-1  | 2026-01-03 08:55:41.990 UTC [456] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+timescaledb-1  | 2026-01-03 08:55:41.990 UTC [456] STATEMENT:  
+timescaledb-1  | 	            SELECT ts, value
+timescaledb-1  | 	            FROM measurements_histo
+timescaledb-1  | 	            WHERE series='meter1:load_kw'
+timescaledb-1  | 	            ORDER BY ts DESC
+timescaledb-1  | 	            LIMIT 1
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 08:56:30.349 UTC [750] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-03 08:50:00+00, 2026-01-03 08:55:00+00 ]
+timescaledb-1  | 2026-01-03 08:56:30.350 UTC [750] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:56:30.352 UTC [750] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 08:56:31.469 UTC [759] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-03 08:50:00+00, 2026-01-03 08:55:00+00 ]
+timescaledb-1  | 2026-01-03 08:56:31.470 UTC [759] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:56:31.472 UTC [759] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 08:57:45.181 UTC [19] LOG:  checkpoint starting: time
+timescaledb-1  | 2026-01-03 08:57:45.794 UTC [19] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.604 s, sync=0.004 s, total=0.614 s; sync files=7, longest=0.002 s, average=0.001 s; distance=15 kB, estimate=4306 kB; lsn=0/1B1BC10, redo lsn=0/1B1BBB8
+timescaledb-1  | 2026-01-03 09:00:41.991 UTC [456] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+timescaledb-1  | 2026-01-03 09:00:41.991 UTC [456] STATEMENT:  
+timescaledb-1  | 	            SELECT ts, value
+timescaledb-1  | 	            FROM measurements_histo
+timescaledb-1  | 	            WHERE series='meter1:load_kw'
+timescaledb-1  | 	            ORDER BY ts DESC
+timescaledb-1  | 	            LIMIT 1
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 09:01:31.573 UTC [1011] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-03 08:55:00+00, 2026-01-03 09:00:00+00 ]
+timescaledb-1  | 2026-01-03 09:01:31.574 UTC [1011] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 09:01:31.576 UTC [1011] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 09:02:21.774 UTC [1054] LOG:  invalid length of startup packet
+timescaledb-1  | 2026-01-03 09:02:30.423 UTC [1063] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-03 08:55:00+00, 2026-01-03 09:00:00+00 ]
+timescaledb-1  | 2026-01-03 09:02:30.425 UTC [1063] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 09:02:30.426 UTC [1063] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 09:02:45.895 UTC [19] LOG:  checkpoint starting: time
+timescaledb-1  | 2026-01-03 09:02:46.509 UTC [19] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.604 s, sync=0.004 s, total=0.615 s; sync files=7, longest=0.002 s, average=0.001 s; distance=11 kB, estimate=3876 kB; lsn=0/1B1EC08, redo lsn=0/1B1EBB0
+timescaledb-1  | 2026-01-03 09:02:52.701 UTC [1082] LOG:  invalid length of startup packet
+timescaledb-1  | 2026-01-03 09:05:41.992 UTC [456] ERROR:  current transaction is aborted, commands ignored until end of transaction block
+timescaledb-1  | 2026-01-03 09:05:41.992 UTC [456] STATEMENT:  
+timescaledb-1  | 	            SELECT ts, value
+timescaledb-1  | 	            FROM measurements_histo
+timescaledb-1  | 	            WHERE series='meter1:load_kw'
+timescaledb-1  | 	            ORDER BY ts DESC
+timescaledb-1  | 	            LIMIT 1
+timescaledb-1  | 	            
+timescaledb-1  | 2026-01-03 09:06:30.469 UTC [1284] LOG:  continuous aggregate refresh (individual invalidation) on "forecasts_5m" in window [ 2026-01-03 09:00:00+00, 2026-01-03 09:05:00+00 ]
+timescaledb-1  | 2026-01-03 09:06:30.470 UTC [1284] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 09:06:30.471 UTC [1284] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_5"
+timescaledb-1  | 2026-01-03 09:06:31.683 UTC [1285] LOG:  continuous aggregate refresh (individual invalidation) on "decisions_5m" in window [ 2026-01-03 09:00:00+00, 2026-01-03 09:05:00+00 ]
+timescaledb-1  | 2026-01-03 09:06:31.684 UTC [1285] LOG:  deleted 0 row(s) from materialization table "_timescaledb_internal._materialized_hypertable_4"
+timescaledb-1  | 2026-01-03 09:06:31.686 UTC [1285] LOG:  inserted 0 row(s) into materialization table "_timescaledb_internal._materialized_hypertable_4"

@@ -1,0 +1,116 @@
+from fastapi import FastAPI
+import os, json, logging, contextvars, uuid
+from datetime import datetime
+import psycopg2, psycopg2.extras
+
+# ------------------------------------------------------------
+# Globale Settings & Kontexte
+# ------------------------------------------------------------
+CORR = contextvars.ContextVar("corr_id", default=None)
+
+app = FastAPI()
+
+def _json_logger(service="router_agent"):
+    """Strukturierte JSON-Logs"""
+    class JsonHandler(logging.StreamHandler):
+        def emit(self, record):
+            payload = {
+                "ts": datetime.utcnow().isoformat() + "Z",
+                "lvl": record.levelname,
+                "msg": record.getMessage(),
+                "svc": service,
+                "corr_id": CORR.get(),
+            }
+            self.stream.write(json.dumps(payload) + "\n")
+    logging.basicConfig(handlers=[JsonHandler()], level=os.getenv("LOG_LEVEL", "INFO"))
+
+_json_logger()
+log = logging.getLogger("router_agent")
+
+# ------------------------------------------------------------
+# Datenbank-Setup
+# ------------------------------------------------------------
+DB_URL = os.getenv("DB_URL", "postgresql://postgres:postgres@timescaledb:5432/energy")
+DRY_RUN = os.getenv("ROUTER_DRY_RUN", "true").lower() == "true"
+
+def db_conn():
+    return psycopg2.connect(DB_URL)
+
+def db_ping():
+    try:
+        with db_conn() as c, c.cursor() as cur:
+            cur.execute("SELECT 1")
+        return True
+    except Exception as e:
+        log.error(f"db ping failed: {e}")
+        return False
+
+def _ensure_tables():
+    with db_conn() as c, c.cursor() as cur:
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS applications(
+          device text NOT NULL,
+          target_ts timestamptz NOT NULL,
+          applied_at timestamptz NOT NULL DEFAULT now(),
+          corr_id text,
+          PRIMARY KEY(device, target_ts)
+        );
+        """)
+
+_ensure_tables()
+
+# ------------------------------------------------------------
+# Health & Readiness
+# ------------------------------------------------------------
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "router_agent", "dry_run": DRY_RUN}
+
+@app.get("/ready")
+def ready():
+    return {"ready": bool(db_ping())}
+
+# ------------------------------------------------------------
+# Idempotenz-Logik
+# ------------------------------------------------------------
+def already_applied(device: str, target_ts: str) -> bool:
+    with db_conn() as c, c.cursor() as cur:
+        cur.execute("SELECT 1 FROM applications WHERE device=%s AND target_ts=%s",
+                    (device, target_ts))
+        return bool(cur.fetchone())
+
+def mark_applied(device: str, target_ts: str, corr_id: str):
+    with db_conn() as c, c.cursor() as cur:
+        cur.execute(
+            "INSERT INTO applications(device, target_ts, corr_id) VALUES(%s,%s,%s) ON CONFLICT DO NOTHING",
+            (device, target_ts, corr_id)
+        )
+
+# ------------------------------------------------------------
+# Setpoint-Anwendung
+# ------------------------------------------------------------
+def apply_setpoint(sp: dict, headers: dict | None = None):
+    corr = (headers or {}).get("correlation_id") or str(uuid.uuid4())
+    CORR.set(corr)
+    device = sp["device"]
+    target_ts = sp["target_ts"]
+    setpoint_kw = sp["setpoint_kw"]
+
+    # Idempotenz-Guard
+    if already_applied(device, target_ts):
+        log.info(f"skip duplicate setpoint for {device}@{target_ts}; corr={corr}")
+        return
+
+    if DRY_RUN:
+        log.info(f"[router] would apply setpoint: {sp}")
+        mark_applied(device, target_ts, corr)
+        return
+
+    try:
+        # Hier echte Aktor-Integration (HTTP, Modbus, MQTT, …)
+        log.info(f"[router] APPLY setpoint LIVE: {sp}")
+        mark_applied(device, target_ts, corr)
+    except Exception as e:
+        log.error(f"apply failed: {e}")
+        # Kein mark_applied → erneuter Versuch beim nächsten Run
+

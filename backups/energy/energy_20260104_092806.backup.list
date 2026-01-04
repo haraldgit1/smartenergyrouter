@@ -1,0 +1,275 @@
+;
+; Archive created at 2026-01-04 09:28:06 UTC
+;     dbname: energy
+;     TOC Entries: 264
+;     Compression: gzip
+;     Dump Version: 1.16-0
+;     Format: CUSTOM
+;     Integer: 4 bytes
+;     Offset: 8 bytes
+;     Dumped from database version: 17.7 (Ubuntu 17.7-3.pgdg22.04+1)
+;     Dumped by pg_dump version: 17.7 (Ubuntu 17.7-3.pgdg22.04+1)
+;
+;
+; Selected TOC Entries:
+;
+2; 3079 16385 EXTENSION - timescaledb 
+6003; 0 0 COMMENT - EXTENSION timescaledb 
+3; 3079 24640 EXTENSION - timescaledb_toolkit 
+6004; 0 0 COMMENT - EXTENSION timescaledb_toolkit 
+4; 3079 26140 EXTENSION - uuid-ossp 
+6005; 0 0 COMMENT - EXTENSION "uuid-ossp" 
+967; 1255 26752 FUNCTION public measurements_series_key_sync() postgres
+289; 1259 17181 TABLE public decisions postgres
+349; 1259 26592 VIEW _timescaledb_internal _direct_view_19 postgres
+351; 1259 26627 TABLE public forecasts_histo postgres
+358; 1259 26742 VIEW _timescaledb_internal _direct_view_28 postgres
+295; 1259 26151 VIEW _timescaledb_internal _direct_view_7 postgres
+288; 1259 17173 TABLE public forecasts postgres
+296; 1259 26155 VIEW _timescaledb_internal _direct_view_8 postgres
+297; 1259 26159 TABLE public measurements_legacy postgres
+298; 1259 26164 TABLE _timescaledb_internal _hyper_14_13_chunk postgres
+299; 1259 26170 TABLE _timescaledb_internal _hyper_14_7_chunk postgres
+300; 1259 26176 TABLE _timescaledb_internal _hyper_14_8_chunk postgres
+301; 1259 26182 TABLE _timescaledb_internal _hyper_14_9_chunk postgres
+302; 1259 26188 TABLE public awattar_prices postgres
+303; 1259 26195 TABLE _timescaledb_internal _hyper_15_10_chunk postgres
+304; 1259 26203 TABLE _timescaledb_internal _hyper_5_11_chunk postgres
+305; 1259 26209 TABLE _timescaledb_internal _hyper_5_12_chunk postgres
+306; 1259 26215 TABLE _timescaledb_internal _hyper_5_2_chunk postgres
+307; 1259 26221 TABLE _timescaledb_internal _materialized_hypertable_8 postgres
+308; 1259 26226 TABLE _timescaledb_internal _hyper_8_3_chunk postgres
+346; 1259 26577 TABLE _timescaledb_internal _materialized_hypertable_19 postgres
+355; 1259 26726 TABLE _timescaledb_internal _materialized_hypertable_28 postgres
+309; 1259 26232 TABLE _timescaledb_internal _materialized_hypertable_7 postgres
+348; 1259 26588 VIEW _timescaledb_internal _partial_view_19 postgres
+357; 1259 26738 VIEW _timescaledb_internal _partial_view_28 postgres
+310; 1259 26237 VIEW _timescaledb_internal _partial_view_7 postgres
+311; 1259 26241 VIEW _timescaledb_internal _partial_view_8 postgres
+312; 1259 26245 TABLE public applications postgres
+290; 1259 24576 TABLE public bandit_decisions postgres
+292; 1259 24597 TABLE public bandit_qvalues postgres
+291; 1259 24584 TABLE public bandit_rewards postgres
+347; 1259 26584 VIEW public decisions_5m postgres
+352; 1259 26634 TABLE public decisions_histo postgres
+313; 1259 26251 TABLE public device_usecase postgres
+314; 1259 26259 TABLE public devices postgres
+315; 1259 26269 SEQUENCE public events_event_id_seq postgres
+316; 1259 26270 TABLE public events postgres
+345; 1259 26542 TABLE public flows postgres
+356; 1259 26734 VIEW public forecasts_5m postgres
+317; 1259 26286 TABLE public mdm_menu_items postgres
+318; 1259 26294 SEQUENCE public mdm_menu_items_id_seq postgres
+6006; 0 0 SEQUENCE OWNED BY public mdm_menu_items_id_seq postgres
+319; 1259 26295 TABLE public mdm_role_menu postgres
+320; 1259 26298 SEQUENCE public mdm_role_menu_id_seq postgres
+6007; 0 0 SEQUENCE OWNED BY public mdm_role_menu_id_seq postgres
+321; 1259 26299 TABLE public mdm_roles postgres
+322; 1259 26304 SEQUENCE public mdm_roles_id_seq postgres
+6008; 0 0 SEQUENCE OWNED BY public mdm_roles_id_seq postgres
+359; 1259 26746 TABLE public measurements postgres
+350; 1259 26620 TABLE public measurements_histo postgres
+354; 1259 26679 TABLE public measurements_legacy_empty_20260103 postgres
+323; 1259 26311 TABLE public optimize_jobs postgres
+324; 1259 26321 TABLE public optimizer_input postgres
+325; 1259 26326 SEQUENCE public optimizer_input_id_seq postgres
+6009; 0 0 SEQUENCE OWNED BY public optimizer_input_id_seq postgres
+326; 1259 26327 TABLE public prices_awattar postgres
+327; 1259 26334 TABLE public prices_awattar_histo postgres
+294; 1259 24619 TABLE public router_actions postgres
+353; 1259 26641 TABLE public router_actions_histo postgres
+293; 1259 24618 SEQUENCE public router_actions_id_seq postgres
+6010; 0 0 SEQUENCE OWNED BY public router_actions_id_seq postgres
+328; 1259 26342 VIEW public sq_device_events_last_24h postgres
+329; 1259 26346 VIEW public v_flows_summary postgres
+330; 1259 26351 VIEW public sq_device_flows_last_24h postgres
+331; 1259 26356 VIEW public sq_events_last_24h postgres
+332; 1259 26360 VIEW public sq_events_last_7d_errors postgres
+333; 1259 26364 VIEW public sq_flows_last_24h postgres
+334; 1259 26368 VIEW public sq_prices_awattar_compare_4h postgres
+360; 1259 26755 TABLE public t1 postgres
+335; 1259 26373 TABLE public usecases postgres
+336; 1259 26380 SEQUENCE public usecases_usecase_id_seq postgres
+6011; 0 0 SEQUENCE OWNED BY public usecases_usecase_id_seq postgres
+337; 1259 26381 VIEW public v_decisions_latest postgres
+338; 1259 26385 VIEW public v_device_last_event postgres
+339; 1259 26390 VIEW public v_device_usecases_expanded postgres
+340; 1259 26395 VIEW public v_devices_overview postgres
+341; 1259 26400 VIEW public v_flow_events_ordered postgres
+342; 1259 26404 VIEW public v_forecasts_latest postgres
+343; 1259 26408 VIEW public v_usecases_overview postgres
+344; 1259 26413 TABLE public weather_points postgres
+5519; 2604 26417 DEFAULT _timescaledb_internal _hyper_15_10_chunk source postgres
+5520; 2604 26418 DEFAULT _timescaledb_internal _hyper_15_10_chunk created_at postgres
+5533; 2604 26419 DEFAULT public mdm_menu_items id postgres
+5537; 2604 26420 DEFAULT public mdm_role_menu id postgres
+5538; 2604 26421 DEFAULT public mdm_roles id postgres
+5544; 2604 26422 DEFAULT public optimizer_input id postgres
+5515; 2604 24622 DEFAULT public router_actions id postgres
+5550; 2604 26423 DEFAULT public usecases usecase_id postgres
+5461; 0 16412 TABLE DATA _timescaledb_catalog hypertable postgres
+5467; 0 16482 TABLE DATA _timescaledb_catalog chunk postgres
+5471; 0 16525 TABLE DATA _timescaledb_catalog chunk_column_stats postgres
+5463; 0 16448 TABLE DATA _timescaledb_catalog dimension postgres
+5465; 0 16467 TABLE DATA _timescaledb_catalog dimension_slice postgres
+5469; 0 16507 TABLE DATA _timescaledb_catalog chunk_constraint postgres
+5484; 0 16713 TABLE DATA _timescaledb_catalog compression_chunk_size postgres
+5483; 0 16702 TABLE DATA _timescaledb_catalog compression_settings postgres
+5476; 0 16613 TABLE DATA _timescaledb_catalog continuous_agg postgres
+5485; 0 16729 TABLE DATA _timescaledb_catalog continuous_agg_migrate_plan postgres
+5486; 0 16738 TABLE DATA _timescaledb_catalog continuous_agg_migrate_plan_step postgres
+5477; 0 16640 TABLE DATA _timescaledb_catalog continuous_aggs_bucket_function postgres
+5480; 0 16673 TABLE DATA _timescaledb_catalog continuous_aggs_hypertable_invalidation_log postgres
+5478; 0 16653 TABLE DATA _timescaledb_catalog continuous_aggs_invalidation_threshold postgres
+5481; 0 16677 TABLE DATA _timescaledb_catalog continuous_aggs_materialization_invalidation_log postgres
+5482; 0 16686 TABLE DATA _timescaledb_catalog continuous_aggs_materialization_ranges postgres
+5479; 0 16663 TABLE DATA _timescaledb_catalog continuous_aggs_watermark postgres
+5475; 0 16600 TABLE DATA _timescaledb_catalog metadata postgres
+5462; 0 16434 TABLE DATA _timescaledb_catalog tablespace postgres
+5474; 0 16545 TABLE DATA _timescaledb_config bgw_job postgres
+5956; 0 26164 TABLE DATA _timescaledb_internal _hyper_14_13_chunk postgres
+5957; 0 26170 TABLE DATA _timescaledb_internal _hyper_14_7_chunk postgres
+5958; 0 26176 TABLE DATA _timescaledb_internal _hyper_14_8_chunk postgres
+5959; 0 26182 TABLE DATA _timescaledb_internal _hyper_14_9_chunk postgres
+5961; 0 26195 TABLE DATA _timescaledb_internal _hyper_15_10_chunk postgres
+5962; 0 26203 TABLE DATA _timescaledb_internal _hyper_5_11_chunk postgres
+5963; 0 26209 TABLE DATA _timescaledb_internal _hyper_5_12_chunk postgres
+5964; 0 26215 TABLE DATA _timescaledb_internal _hyper_5_2_chunk postgres
+5966; 0 26226 TABLE DATA _timescaledb_internal _hyper_8_3_chunk postgres
+5988; 0 26577 TABLE DATA _timescaledb_internal _materialized_hypertable_19 postgres
+5994; 0 26726 TABLE DATA _timescaledb_internal _materialized_hypertable_28 postgres
+5967; 0 26232 TABLE DATA _timescaledb_internal _materialized_hypertable_7 postgres
+5965; 0 26221 TABLE DATA _timescaledb_internal _materialized_hypertable_8 postgres
+5968; 0 26245 TABLE DATA public applications postgres
+5960; 0 26188 TABLE DATA public awattar_prices postgres
+5950; 0 24576 TABLE DATA public bandit_decisions postgres
+5952; 0 24597 TABLE DATA public bandit_qvalues postgres
+5951; 0 24584 TABLE DATA public bandit_rewards postgres
+5949; 0 17181 TABLE DATA public decisions postgres
+5991; 0 26634 TABLE DATA public decisions_histo postgres
+5969; 0 26251 TABLE DATA public device_usecase postgres
+5970; 0 26259 TABLE DATA public devices postgres
+5972; 0 26270 TABLE DATA public events postgres
+5987; 0 26542 TABLE DATA public flows postgres
+5948; 0 17173 TABLE DATA public forecasts postgres
+5990; 0 26627 TABLE DATA public forecasts_histo postgres
+5973; 0 26286 TABLE DATA public mdm_menu_items postgres
+5975; 0 26295 TABLE DATA public mdm_role_menu postgres
+5977; 0 26299 TABLE DATA public mdm_roles postgres
+5995; 0 26746 TABLE DATA public measurements postgres
+5989; 0 26620 TABLE DATA public measurements_histo postgres
+5955; 0 26159 TABLE DATA public measurements_legacy postgres
+5993; 0 26679 TABLE DATA public measurements_legacy_empty_20260103 postgres
+5979; 0 26311 TABLE DATA public optimize_jobs postgres
+5980; 0 26321 TABLE DATA public optimizer_input postgres
+5982; 0 26327 TABLE DATA public prices_awattar postgres
+5983; 0 26334 TABLE DATA public prices_awattar_histo postgres
+5954; 0 24619 TABLE DATA public router_actions postgres
+5992; 0 26641 TABLE DATA public router_actions_histo postgres
+5996; 0 26755 TABLE DATA public t1 postgres
+5984; 0 26373 TABLE DATA public usecases postgres
+5986; 0 26413 TABLE DATA public weather_points postgres
+6012; 0 0 SEQUENCE SET _timescaledb_catalog chunk_column_stats_id_seq postgres
+6013; 0 0 SEQUENCE SET _timescaledb_catalog chunk_constraint_name postgres
+6014; 0 0 SEQUENCE SET _timescaledb_catalog chunk_id_seq postgres
+6015; 0 0 SEQUENCE SET _timescaledb_catalog continuous_agg_migrate_plan_step_step_id_seq postgres
+6016; 0 0 SEQUENCE SET _timescaledb_catalog dimension_id_seq postgres
+6017; 0 0 SEQUENCE SET _timescaledb_catalog dimension_slice_id_seq postgres
+6018; 0 0 SEQUENCE SET _timescaledb_catalog hypertable_id_seq postgres
+6019; 0 0 SEQUENCE SET _timescaledb_config bgw_job_id_seq postgres
+6020; 0 0 SEQUENCE SET public events_event_id_seq postgres
+6021; 0 0 SEQUENCE SET public mdm_menu_items_id_seq postgres
+6022; 0 0 SEQUENCE SET public mdm_role_menu_id_seq postgres
+6023; 0 0 SEQUENCE SET public mdm_roles_id_seq postgres
+6024; 0 0 SEQUENCE SET public optimizer_input_id_seq postgres
+6025; 0 0 SEQUENCE SET public router_actions_id_seq postgres
+6026; 0 0 SEQUENCE SET public usecases_usecase_id_seq postgres
+5675; 2606 26425 CONSTRAINT _timescaledb_internal _hyper_15_10_chunk 10_6_awattar_prices_pkey postgres
+5677; 2606 26427 CONSTRAINT _timescaledb_internal _hyper_5_11_chunk 11_10_forecasts_series_target_ts_ts_uq postgres
+5682; 2606 26429 CONSTRAINT _timescaledb_internal _hyper_5_12_chunk 12_11_forecasts_series_target_ts_ts_uq postgres
+5687; 2606 26431 CONSTRAINT _timescaledb_internal _hyper_5_2_chunk 2_9_forecasts_series_target_ts_ts_uq postgres
+5698; 2606 26433 CONSTRAINT public applications applications_pkey postgres
+5673; 2606 26435 CONSTRAINT public awattar_prices awattar_prices_pkey postgres
+5653; 2606 24583 CONSTRAINT public bandit_decisions bandit_decisions_pkey postgres
+5659; 2606 24606 CONSTRAINT public bandit_qvalues bandit_qvalues_pkey postgres
+5656; 2606 24591 CONSTRAINT public bandit_rewards bandit_rewards_pkey postgres
+5700; 2606 26437 CONSTRAINT public device_usecase device_usecase_pkey postgres
+5702; 2606 26439 CONSTRAINT public devices devices_pkey postgres
+5704; 2606 26441 CONSTRAINT public events events_pkey postgres
+5710; 2606 26445 CONSTRAINT public mdm_menu_items mdm_menu_items_menu_key_key postgres
+5712; 2606 26447 CONSTRAINT public mdm_menu_items mdm_menu_items_pkey postgres
+5714; 2606 26449 CONSTRAINT public mdm_role_menu mdm_role_menu_pkey postgres
+5716; 2606 26451 CONSTRAINT public mdm_role_menu mdm_role_menu_role_id_menu_id_key postgres
+5718; 2606 26453 CONSTRAINT public mdm_roles mdm_roles_pkey postgres
+5720; 2606 26455 CONSTRAINT public mdm_roles mdm_roles_role_key_key postgres
+5724; 2606 26459 CONSTRAINT public optimize_jobs optimize_jobs_pkey postgres
+5730; 2606 26461 CONSTRAINT public prices_awattar_histo prices_awattar_histo_pkey postgres
+5727; 2606 26463 CONSTRAINT public prices_awattar prices_awattar_pkey postgres
+5661; 2606 24627 CONSTRAINT public router_actions router_actions_pkey postgres
+5733; 2606 26465 CONSTRAINT public usecases usecases_key_key postgres
+5735; 2606 26467 CONSTRAINT public usecases usecases_pkey postgres
+5737; 2606 26469 CONSTRAINT public weather_points weather_points_pkey postgres
+5664; 1259 26470 INDEX _timescaledb_internal _hyper_14_13_chunk_measurements_ts_idx postgres
+5665; 1259 26471 INDEX _timescaledb_internal _hyper_14_13_chunk_measurements_ts_uq1_idx postgres
+5666; 1259 26472 INDEX _timescaledb_internal _hyper_14_7_chunk_measurements_ts_idx postgres
+5667; 1259 26473 INDEX _timescaledb_internal _hyper_14_7_chunk_measurements_ts_uq1_idx postgres
+5668; 1259 26474 INDEX _timescaledb_internal _hyper_14_8_chunk_measurements_ts_idx postgres
+5669; 1259 26475 INDEX _timescaledb_internal _hyper_14_8_chunk_measurements_ts_uq1_idx postgres
+5670; 1259 26476 INDEX _timescaledb_internal _hyper_14_9_chunk_measurements_ts_idx postgres
+5671; 1259 26477 INDEX _timescaledb_internal _hyper_14_9_chunk_measurements_ts_uq1_idx postgres
+5678; 1259 26478 INDEX _timescaledb_internal _hyper_5_11_chunk_forecasts_ts_idx postgres
+5679; 1259 26479 INDEX _timescaledb_internal _hyper_5_11_chunk_ix_forecasts_series_ts postgres
+5680; 1259 26480 INDEX _timescaledb_internal _hyper_5_11_chunk_ix_forecasts_target postgres
+5683; 1259 26481 INDEX _timescaledb_internal _hyper_5_12_chunk_forecasts_ts_idx postgres
+5684; 1259 26482 INDEX _timescaledb_internal _hyper_5_12_chunk_ix_forecasts_series_ts postgres
+5685; 1259 26483 INDEX _timescaledb_internal _hyper_5_12_chunk_ix_forecasts_target postgres
+5688; 1259 26484 INDEX _timescaledb_internal _hyper_5_2_chunk_forecasts_ts_idx postgres
+5689; 1259 26485 INDEX _timescaledb_internal _hyper_5_2_chunk_ix_forecasts_series_ts postgres
+5690; 1259 26486 INDEX _timescaledb_internal _hyper_5_2_chunk_ix_forecasts_target postgres
+5693; 1259 26487 INDEX _timescaledb_internal _hyper_8_3_chunk__materialized_hypertable_8_bucket_idx postgres
+5694; 1259 26488 INDEX _timescaledb_internal _hyper_8_3_chunk__materialized_hypertable_8_series_bucket_idx postgres
+5741; 1259 26582 INDEX _timescaledb_internal _materialized_hypertable_19_bucket_5m_idx postgres
+5742; 1259 26583 INDEX _timescaledb_internal _materialized_hypertable_19_device_bucket_5m_idx postgres
+5753; 1259 26731 INDEX _timescaledb_internal _materialized_hypertable_28_bucket_5m_idx postgres
+5754; 1259 26733 INDEX _timescaledb_internal _materialized_hypertable_28_quantile_bucket_5m_idx postgres
+5755; 1259 26732 INDEX _timescaledb_internal _materialized_hypertable_28_series_bucket_5m_idx postgres
+5695; 1259 26489 INDEX _timescaledb_internal _materialized_hypertable_7_bucket_idx postgres
+5696; 1259 26490 INDEX _timescaledb_internal _materialized_hypertable_7_device_bucket_idx postgres
+5691; 1259 26491 INDEX _timescaledb_internal _materialized_hypertable_8_bucket_idx postgres
+5692; 1259 26492 INDEX _timescaledb_internal _materialized_hypertable_8_series_bucket_idx postgres
+5747; 1259 26639 INDEX public decisions_histo_device_ts_idx postgres
+5748; 1259 26640 INDEX public decisions_histo_ts_idx postgres
+5649; 1259 26493 INDEX public decisions_ts_idx postgres
+5738; 1259 26547 INDEX public flows_device_ts_idx postgres
+5739; 1259 26548 INDEX public flows_series_ts_idx postgres
+5740; 1259 26549 INDEX public flows_ts_idx postgres
+5745; 1259 26632 INDEX public forecasts_histo_series_target_ts_idx postgres
+5746; 1259 26633 INDEX public forecasts_histo_ts_idx postgres
+5654; 1259 24607 INDEX public idx_bandit_decisions_ts postgres
+5657; 1259 24608 INDEX public idx_bandit_rewards_ts postgres
+5705; 1259 26496 INDEX public idx_events_entity postgres
+5706; 1259 26497 INDEX public idx_events_flow postgres
+5707; 1259 26498 INDEX public idx_events_service postgres
+5708; 1259 26499 INDEX public idx_events_ts postgres
+5721; 1259 26500 INDEX public idx_optimize_jobs_created postgres
+5722; 1259 26501 INDEX public idx_optimize_jobs_device postgres
+5650; 1259 26502 INDEX public ix_decisions_target_device postgres
+5743; 1259 26625 INDEX public measurements_histo_series_ts_idx postgres
+5744; 1259 26626 INDEX public measurements_histo_ts_idx postgres
+5751; 1259 26684 INDEX public measurements_series_pk postgres
+5752; 1259 26685 INDEX public measurements_series_ts_idx postgres
+5662; 1259 26509 INDEX public measurements_ts_idx postgres
+5756; 1259 26751 INDEX public measurements_ts_idx1 postgres
+5663; 1259 26510 INDEX public measurements_ts_uq1_idx postgres
+5725; 1259 26511 INDEX public optimizer_input_target_ts_idx postgres
+5728; 1259 26512 INDEX public prices_awattar_histo_generated_ts_idx postgres
+5731; 1259 26513 INDEX public prices_awattar_histo_ts_idx postgres
+5749; 1259 26646 INDEX public router_actions_histo_device_ts_idx postgres
+5750; 1259 26647 INDEX public router_actions_histo_ts_idx postgres
+5651; 1259 26514 INDEX public ux_decisions_ts_target_device postgres
+5762; 2620 26753 TRIGGER public measurements trg_measurements_series_key_sync postgres
+5757; 2606 24592 FK CONSTRAINT public bandit_rewards bandit_rewards_decision_id_fkey postgres
+5758; 2606 26515 FK CONSTRAINT public device_usecase device_usecase_device_id_fkey postgres
+5759; 2606 26520 FK CONSTRAINT public device_usecase device_usecase_usecase_id_fkey postgres
+5760; 2606 26525 FK CONSTRAINT public mdm_role_menu mdm_role_menu_menu_id_fkey postgres
+5761; 2606 26530 FK CONSTRAINT public mdm_role_menu mdm_role_menu_role_id_fkey postgres

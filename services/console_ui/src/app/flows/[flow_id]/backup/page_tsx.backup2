@@ -1,0 +1,92 @@
+// src/app/flows/[flow_id]/page.tsx
+import { notFound } from "next/navigation";
+import { getFlowByAnyId, type Flow } from "@/lib/api";
+import { FlowInspectorLive } from "@/components/flow/flow-inspector-live";
+
+interface FlowInspectorPageProps {
+  params: { flow_id: string };
+}
+
+export const dynamic = "force-dynamic";
+
+export default async function FlowInspectorPage({
+  params,
+}: FlowInspectorPageProps) {
+  const idFromUrl = decodeURIComponent(params.flow_id);
+  const hours = 24;
+
+  const flow = await getFlowByAnyId(idFromUrl, hours);
+
+  if (!flow) {
+    notFound();
+  }
+
+  const displayId = flow.plan_id ?? flow.flow_id ?? idFromUrl;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-semibold">
+            Flow-Inspector:{" "}
+            <span className="text-emerald-400 font-mono">{displayId}</span>
+          </h1>
+          <p className="text-sm text-slate-400">
+            Device <span className="font-mono">{flow.device}</span> · Usecase{" "}
+            <span className="font-mono">{flow.usecase}</span>
+          </p>
+        </div>
+      </div>
+
+      {/* Zeitfenster & Meta */}
+      <section className="border border-slate-800 rounded-xl p-4 space-y-3 bg-slate-950/50">
+        <h2 className="text-sm font-semibold text-slate-100">
+          Zeitfenster & Leistung
+        </h2>
+        <p className="text-xs text-slate-400">
+          Power: <span className="font-mono">{flow.power_kw} kW</span> · Start-Timestamp:{" "}
+          <span className="font-mono">{flow.ts}</span>
+        </p>
+
+        <div className="space-y-2">
+          {flow.window?.length === 0 && (
+            <p className="text-xs text-slate-500">Keine Zeitfenster definiert.</p>
+          )}
+
+          {flow.window?.map(([start, end], idx) => (
+            <div key={idx} className="space-y-1">
+              <div className="flex justify-between text-[11px] text-slate-400">
+                <span>Window {idx + 1}</span>
+                <span className="font-mono">
+                  {start} → {end}
+                </span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                <div className="h-full w-1/3 bg-emerald-500/70" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Live-Refresh-Block */}
+      <FlowInspectorLive id={displayId} />
+
+      {/* Raw JSON für Debugging */}
+      <section className="border border-slate-800 rounded-xl bg-black p-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-slate-100">
+            Raw JSON (Flow-Daten)
+          </h2>
+          <span className="text-[11px] text-slate-500">
+            gut für Debugging & Logging
+          </span>
+        </div>
+        <pre className="text-xs leading-relaxed text-emerald-200 bg-slate-950 rounded-lg p-3 overflow-auto max-h-[420px]">
+          {JSON.stringify(flow, null, 2)}
+        </pre>
+      </section>
+    </div>
+  );
+}
+
