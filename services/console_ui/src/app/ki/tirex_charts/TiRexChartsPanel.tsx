@@ -137,9 +137,7 @@ export default function TiRexChartsPanel({
         {nowTs && (
           <span>
             Jetzt-Linie (Axis):{" "}
-            <span className="font-mono text-amber-200">
-              {formatTs(nowTs)}
-            </span>
+            <span className="font-mono text-amber-200">{formatTs(nowTs)}</span>
           </span>
         )}
       </div>
@@ -168,9 +166,7 @@ export default function TiRexChartsPanel({
                   style: { fontSize: 10, fill: "#cbd5f5" },
                 }}
               />
-              <Tooltip
-                labelFormatter={(label) => formatTs(label as string)}
-              />
+              <Tooltip labelFormatter={(label) => formatTs(label as string)} />
               {nowTs && (
                 <ReferenceLine
                   x={nowTs}
@@ -184,12 +180,7 @@ export default function TiRexChartsPanel({
                   }}
                 />
               )}
-              <Line
-                type="monotone"
-                dataKey="actual"
-                name="Ist"
-                dot={false}
-              />
+              <Line type="monotone" dataKey="actual" name="Ist" dot={false} />
               <Line
                 type="monotone"
                 dataKey="q50"
@@ -225,9 +216,7 @@ export default function TiRexChartsPanel({
                   style: { fontSize: 10, fill: "#cbd5f5" },
                 }}
               />
-              <Tooltip
-                labelFormatter={(label) => formatTs(label as string)}
-              />
+              <Tooltip labelFormatter={(label) => formatTs(label as string)} />
               {nowTs && (
                 <ReferenceLine
                   x={nowTs}
@@ -241,12 +230,7 @@ export default function TiRexChartsPanel({
                   }}
                 />
               )}
-              <Line
-                type="monotone"
-                dataKey="price"
-                name="Preis"
-                dot={false}
-              />
+              <Line type="monotone" dataKey="price" name="Preis" dot={false} />
             </LineChart>
           </ResponsiveContainer>
         </div>

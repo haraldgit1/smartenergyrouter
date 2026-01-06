@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 import os
 import psycopg2
-from psycopg2.extras import RealDictCursor
+from psycopg2.extras import RealDictCursor, Json, execute_values
 import requests
 from datetime import datetime, timezone, timedelta
 
@@ -31,6 +31,182 @@ def get_db_connection():
 
 
 router = APIRouter(prefix="/ki", tags=["ki"])
+
+
+def _iso_z(ts: datetime) -> str:
+    return ts.astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _parse_iso(ts: str) -> datetime:
+    # Robust gegen Z oder +00:00
+    if ts.endswith("Z"):
+        ts = ts[:-1] + "+00:00"
+    return datetime.fromisoformat(ts)
+
+
+def _floor_to_step(ts: datetime, step_minutes: int) -> datetime:
+    """
+    Rundet ts in UTC nach unten auf step_minutes.
+    """
+    t = ts.astimezone(timezone.utc)
+    minute = (t.minute // step_minutes) * step_minutes
+    return t.replace(minute=minute, second=0, microsecond=0)
+
+
+def _build_upsampled_forecast(
+    points: List[Dict[str, Any]],
+    step_minutes_target: int,
+    horizon_hours: int,
+) -> List[Dict[str, Any]]:
+    """
+    Upsample Forecast-Punkte auf feineres Raster (z.B. 15 -> 5 Minuten),
+    mittels step-hold (forward-fill innerhalb des 15-min Slots).
+
+    Erwartet points als Liste mit:
+      { "ts": "...", "q10": ..., "q50": ..., "q90": ... }
+
+    Gibt Liste mit:
+      { "target_ts": "...", "q10": ..., "q50": ..., "q90": ... }
+    """
+    if not points:
+        return []
+
+    orig = []
+    for p in points:
+        if "ts" not in p:
+            continue
+        try:
+            d = _parse_iso(p["ts"])
+        except Exception:
+            continue
+        orig.append((d, p))
+
+    if not orig:
+        return []
+
+    orig.sort(key=lambda x: x[0])
+    start = orig[0][0]
+    end = start + timedelta(hours=horizon_hours)
+
+    idx = 0
+    last_p: Optional[Dict[str, Any]] = None
+
+    out: List[Dict[str, Any]] = []
+    cur = start
+    step = timedelta(minutes=step_minutes_target)
+
+    while cur <= end:
+        while idx < len(orig) and orig[idx][0] <= cur:
+            last_p = orig[idx][1]
+            idx += 1
+
+        if last_p is None:
+            q10 = q50 = q90 = None
+        else:
+            q10 = last_p.get("q10")
+            q50 = last_p.get("q50")
+            q90 = last_p.get("q90")
+
+        out.append(
+            {
+                "target_ts": _iso_z(cur),
+                "q10": q10,
+                "q50": q50,
+                "q90": q90,
+            }
+        )
+        cur += step
+
+    return out
+
+
+def _persist_forecast_points(
+    series: str,
+    backend_used: str,
+    predictor_step_minutes: int,
+    step_minutes_requested: int,
+    history_hours: int,
+    horizon_hours: int,
+    forecast_points: List[Dict[str, Any]],
+):
+    """
+    Persistiert Forecast in Tabelle forecasts.
+
+    MVP-Strategie: Wir ersetzen den Zielzeitraum für (series, backend) für diesen Run:
+      - delete rows im target_ts Fenster
+      - insert neue rows mit ts=run_ts (UTC now)
+
+    Umsetzung robust: bulk insert via execute_values (kein VALUES-Monster).
+    """
+    if not forecast_points:
+        return
+
+    # target_ts window ableiten
+    try:
+        t0 = _parse_iso(forecast_points[0]["target_ts"])
+        t1 = _parse_iso(forecast_points[-1]["target_ts"])
+    except Exception:
+        return
+
+    # defensiv: backend_used nie leer
+    backend_used = (backend_used or "").strip() or "unknown"
+
+    run_ts = datetime.now(timezone.utc)
+
+    meta_obj = {
+        "history_hours": history_hours,
+        "horizon_hours": horizon_hours,
+        "step_minutes_requested": step_minutes_requested,
+        "predictor_step_minutes": predictor_step_minutes,
+        "source": "console_api.ki_forecast",
+    }
+
+    conn = get_db_connection()
+    try:
+        with conn.cursor() as cur:
+            # alten Bereich löschen (nur für dieses backend+series)
+            cur.execute(
+                """
+                DELETE FROM forecasts
+                WHERE series = %s
+                  AND backend = %s
+                  AND target_ts >= %s
+                  AND target_ts <= %s
+                """,
+                (series, backend_used, t0, t1),
+            )
+
+            rows = []
+            for p in forecast_points:
+                target_ts = _parse_iso(p["target_ts"])
+                q10 = p.get("q10")
+                q50 = p.get("q50")
+                q90 = p.get("q90")
+                rows.append(
+                    (
+                        run_ts,
+                        target_ts,
+                        series,
+                        q10,
+                        q50,
+                        q90,
+                        backend_used,
+                        Json(meta_obj),
+                    )
+                )
+
+            sql = """
+                INSERT INTO forecasts (ts, target_ts, series, q10, q50, q90, backend, meta)
+                VALUES %s
+            """
+            execute_values(cur, sql, rows, page_size=1000)
+
+        conn.commit()
+    finally:
+        try:
+            conn.close()
+        except Exception:
+            pass
 
 
 # -------------------------------------------------------------------
@@ -73,8 +249,6 @@ def ki_forecast(
 
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-
-            # --- Letzten Timestamp der Serie bestimmen ---
             cur.execute(
                 "SELECT max(ts) AS last_ts FROM measurements WHERE series = %s;",
                 (series,),
@@ -92,9 +266,7 @@ def ki_forecast(
             price_end_ts = last_ts + timedelta(hours=horizon_hours)
             step_interval = f"{step_minutes} minutes"
 
-            # ----------------------------------------------------------
-            # (1) History holen
-            # ----------------------------------------------------------
+            # History
             cur.execute(
                 """
                 SELECT
@@ -116,18 +288,13 @@ def ki_forecast(
                 ts: datetime = r["bucket"]
                 history.append(
                     {
-                        "ts": ts.astimezone(timezone.utc)
-                        .isoformat()
-                        .replace("+00:00", "Z"),
+                        "ts": _iso_z(ts),
                         "value": float(r["value"]) if r["value"] is not None else None,
                     }
                 )
 
-            # ----------------------------------------------------------
-            # (2) Preis-Zeitreihe holen (Awattar / EPEX)
-            # ----------------------------------------------------------
+            # Price
             price_series = "price:awattar_eur_mwh"
-
             cur.execute(
                 """
                 SELECT
@@ -149,9 +316,7 @@ def ki_forecast(
                 ts: datetime = r["bucket"]
                 price.append(
                     {
-                        "ts": ts.astimezone(timezone.utc)
-                        .isoformat()
-                        .replace("+00:00", "Z"),
+                        "ts": _iso_z(ts),
                         "value": float(r["value"]) if r["value"] is not None else None,
                     }
                 )
@@ -169,20 +334,22 @@ def ki_forecast(
         )
 
     # -------------------------------------------------------------------
-    # 2) Predictor-Service aufrufen (TiRex / Baseline)
+    # 2) Predictor-Service aufrufen
     # -------------------------------------------------------------------
+    predictor_step = step_minutes if step_minutes >= 15 else 15
+
     try:
         params = {
             "series": series,
             "history_hours": history_hours,
             "horizon_hours": horizon_hours,
-            "step_minutes": step_minutes,
+            "step_minutes": predictor_step,
             "backend": backend,
         }
         resp = requests.get(
             f"{PREDICTOR_URL}/ki/forecast",
             params=params,
-            timeout=15,
+            timeout=20,
         )
     except Exception as e:
         raise HTTPException(
@@ -197,30 +364,70 @@ def ki_forecast(
         )
 
     pred = resp.json()
-
     points = pred.get("points", [])
     backend_used = pred.get("backend", backend)
 
+    # -------------------------------------------------------------------
+    # 2b) Forecast ggf. auf feineres Raster bringen
+    # -------------------------------------------------------------------
     forecast: List[Dict[str, Any]] = []
-    for p in points:
-        forecast.append(
-            {
-                "target_ts": p["ts"],
-                "q10": p.get("q10"),
-                "q50": p.get("q50"),
-                "q90": p.get("q90"),
-                "backend": backend_used,
-            }
+
+    if step_minutes >= 15:
+        for p in points:
+            forecast.append(
+                {
+                    "target_ts": p.get("ts"),
+                    "q10": p.get("q10"),
+                    "q50": p.get("q50"),
+                    "q90": p.get("q90"),
+                    "backend": backend_used,
+                }
+            )
+    else:
+        up = _build_upsampled_forecast(
+            points=points,
+            step_minutes_target=step_minutes,
+            horizon_hours=horizon_hours,
         )
+        for p in up:
+            forecast.append(
+                {
+                    "target_ts": p["target_ts"],
+                    "q10": p.get("q10"),
+                    "q50": p.get("q50"),
+                    "q90": p.get("q90"),
+                    "backend": backend_used,
+                }
+            )
 
     if not forecast:
         raise HTTPException(
             status_code=400,
-            detail=f"Predictor hat keine Forecast-Punkte geliefert (series='{series}')",
+            detail=(
+                f"Predictor hat keine Forecast-Punkte geliefert "
+                f"(series='{series}', step_minutes={step_minutes}, predictor_step={predictor_step})"
+            ),
         )
 
     # -------------------------------------------------------------------
-    # 3) Meta-Daten
+    # ✅ 2c) Persistieren in forecasts (MVP)
+    # -------------------------------------------------------------------
+    try:
+        _persist_forecast_points(
+            series=series,
+            backend_used=backend_used,
+            predictor_step_minutes=predictor_step,
+            step_minutes_requested=step_minutes,
+            history_hours=history_hours,
+            horizon_hours=horizon_hours,
+            forecast_points=forecast,
+        )
+    except Exception as e:
+        # Persist ist "best effort" – UI/Endpoint soll weiter funktionieren
+        print(f"[WARN] persist forecasts failed: {e}")
+
+    # -------------------------------------------------------------------
+    # 3) Meta
     # -------------------------------------------------------------------
     history_from = history[0]["ts"]
     forecast_to = forecast[-1]["target_ts"]
@@ -230,18 +437,16 @@ def ki_forecast(
         "forecast_points": len(forecast),
         "history_from": history_from,
         "forecast_to": forecast_to,
+        "step_minutes": step_minutes,
+        "predictor_step_minutes": predictor_step,
+        "backend": backend_used,
     }
 
-    # -------------------------------------------------------------------
-    # 4) Ergebnis zurückgeben (inkl. Price-Serie!)
-    # -------------------------------------------------------------------
-    result = {
+    return {
         "series": series,
         "meta": meta,
         "history": history,
         "forecast": forecast,
-        "price": price,       # <---- WICHTIG
+        "price": price,
     }
-
-    return result
 

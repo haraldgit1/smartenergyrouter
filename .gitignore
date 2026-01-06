@@ -21,3 +21,22 @@ __pycache__/
 
 # OS
 .DS_Store
+
+# Python venv
+scripts/venv/
+__pycache__/
+*.pyc
+
+# Backups
+backups/
+
+# Random / temp files
+j
+lis*
+ttttt
+services/console_ui/6V8LF9
+services/console_ui/b
+
+# UI backups
+services/console_ui/src/app/**/backup/
+

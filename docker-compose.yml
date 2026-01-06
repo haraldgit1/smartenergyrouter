@@ -286,6 +286,82 @@ services:
       - rabbitmq
       - timescaledb
 
+  demo_data_gen:
+    build:
+      context: ./services/demo_data_gen
+    environment:
+      PG_CONN_STR: postgres://postgres:postgres@timescaledb:5432/energy
+      STEP_MINUTES: "15"
+      PUSH_EVERY_SECONDS: "10"
+    depends_on:
+      - timescaledb
+    restart: unless-stopped
+
+  awattar_price_gen:
+    build:
+      context: ./services/awattar_price_gen
+    environment:
+      - PG_CONN_STR=postgres://postgres:postgres@timescaledb:5432/energy
+      - STEP_MINUTES=60
+      - INTERVAL_SECONDS=60
+      - BACKFILL_HOURS=336   # 14 Tage
+      # - START_FROM=2026-01-01T00:00:00Z
+    depends_on:
+      - timescaledb
+    restart: unless-stopped
+
+  weather_gen:
+    build:
+      context: ./services/weather_gen
+    environment:
+      - PG_CONN_STR=postgres://postgres:postgres@timescaledb:5432/energy
+      - STEP_MINUTES=15
+      - INTERVAL_SECONDS=60
+      - BACKFILL_HOURS=336   # 14 Tage
+      # - START_FROM=2026-01-01T00:00:00Z
+    depends_on:
+      - timescaledb
+    restart: unless-stopped
+
+  forecast_gen:
+    image: curlimages/curl:8.5.0
+    depends_on:
+      - console_api
+    restart: unless-stopped
+    environment:
+      FORECAST_INTERVAL_SEC: "900"
+      HISTORY_HOURS: "72"
+      HORIZON_HOURS: "48"
+      STEP_MINUTES: "15"
+      INTERVAL_SECONDS: "60"
+      BACKFILL_HOURS: "336"
+      FORECAST_HOURS: "48"
+      BACKEND: "tirex_v1"
+      SERIES_LIST: "demo1:load_kw demo2:load_kw"
+    command: >
+      sh -lc '
+        : "$${FORECAST_INTERVAL_SEC:=900}"
+        : "$${HISTORY_HOURS:=72}"
+        : "$${HORIZON_HOURS:=48}"
+        : "$${STEP_MINUTES:=15}"
+        : "$${BACKEND:=tirex_v1}"
+        : "$${SERIES_LIST:=meter1:load_kw residential1:load_kw}"
+
+        echo "[forecast_gen] starting... interval=$${FORECAST_INTERVAL_SEC}s series=$${SERIES_LIST}"
+
+        while true; do
+          for s in $${SERIES_LIST}; do
+            url="http://console_api:8100/ki/forecast?series=$${s}&history_hours=$${HISTORY_HOURS}&horizon_hours=$${HORIZON_HOURS}&step_minutes=$${STEP_MINUTES}&backend=$${BACKEND}"
+            echo "[forecast_gen] $$(date -Is) trigger: $${s}"
+            curl -fsS --max-time 120 "$${url}" | head -c 200 || echo "[forecast_gen] ERROR calling forecast endpoint for $${s}"
+            echo ""
+          done
+
+          echo "[forecast_gen] sleep $${FORECAST_INTERVAL_SEC}s"
+          sleep "$${FORECAST_INTERVAL_SEC}"
+        done
+      '
+
 volumes:
   tsdata:
 

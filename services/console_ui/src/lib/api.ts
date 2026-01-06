@@ -683,15 +683,17 @@ export async function getTiRexCharts(options: {
         )
         SELECT
           f.target_ts,
-          f.q10,
-          f.q50,
-          f.q90
+          MAX(f.value) FILTER (WHERE f.quantile = 0.10) AS q10,
+          MAX(f.value) FILTER (WHERE f.quantile = 0.50) AS q50,
+          MAX(f.value) FILTER (WHERE f.quantile = 0.90) AS q90
         FROM forecasts_histo f
         JOIN params p
-          ON f.generated_ts >= p.cmp_generated
-         AND f.generated_ts <  p.cmp_generated + interval '1 hour'
+          ON f.ts >= p.cmp_generated
+         AND f.ts <  p.cmp_generated + interval '1 hour'
         WHERE f.series = $2
           AND f.target_ts BETWEEN $3::timestamptz AND $4::timestamptz
+          AND f.quantile IN (0.10, 0.50, 0.90)
+        GROUP BY f.target_ts
         ORDER BY f.target_ts;
         `,
         [cmpGenerated, series, startIso, endIso]

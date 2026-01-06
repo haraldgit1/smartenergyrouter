@@ -136,7 +136,7 @@ class DeviceDetail(BaseModel):
 app = FastAPI(title=API_TITLE, version=API_VERSION)
 
 origins = [
-    "http://18.158.43.62:3000",
+    "http://192.168.178.36:3000",
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]

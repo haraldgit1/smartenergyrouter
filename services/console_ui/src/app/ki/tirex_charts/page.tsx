@@ -61,7 +61,9 @@ type TiRexChartsResponse = {
 const DEFAULT_SERIES = "meter1:load_kw";
 const DEFAULT_HISTORY_HOURS = 48;
 const DEFAULT_HORIZON_HOURS = 48;
-const DEFAULT_RESOLUTION_MINUTES = 60;
+
+// ✅ WICHTIG: vorher 60 — damit wurde auch das API auf 60 Minuten gezwungen
+const DEFAULT_RESOLUTION_MINUTES = 5;
 
 // Demo-Profile für die Auswahl
 const SERIES_OPTIONS = [
@@ -310,30 +312,18 @@ export default function TiRexChartsPage() {
         : null;
 
     const cost_q10 =
-      !isPast && load.q10 != null && priceVal != null
-        ? load.q10 * priceVal
-        : null;
+      !isPast && load.q10 != null && priceVal != null ? load.q10 * priceVal : null;
     const cost_q50 =
-      !isPast && load.q50 != null && priceVal != null
-        ? load.q50 * priceVal
-        : null;
+      !isPast && load.q50 != null && priceVal != null ? load.q50 * priceVal : null;
     const cost_q90 =
-      !isPast && load.q90 != null && priceVal != null
-        ? load.q90 * priceVal
-        : null;
+      !isPast && load.q90 != null && priceVal != null ? load.q90 * priceVal : null;
 
     const cost_q10_compare =
-      load.q10_compare != null && priceCmp != null
-        ? load.q10_compare * priceCmp
-        : null;
+      load.q10_compare != null && priceCmp != null ? load.q10_compare * priceCmp : null;
     const cost_q50_compare =
-      load.q50_compare != null && priceCmp != null
-        ? load.q50_compare * priceCmp
-        : null;
+      load.q50_compare != null && priceCmp != null ? load.q50_compare * priceCmp : null;
     const cost_q90_compare =
-      load.q90_compare != null && priceCmp != null
-        ? load.q90_compare * priceCmp
-        : null;
+      load.q90_compare != null && priceCmp != null ? load.q90_compare * priceCmp : null;
 
     return {
       ts,
@@ -349,45 +339,30 @@ export default function TiRexChartsPage() {
   });
 
   const hasLoadData = loadChartData.some(
-    (p) =>
-      p.actual != null || p.q50 != null || p.q10 != null || p.q90 != null
+    (p) => p.actual != null || p.q50 != null || p.q10 != null || p.q90 != null
   );
   const hasLoadCompare = loadChartData.some(
-    (p) =>
-      p.q10_compare != null || p.q50_compare != null || p.q90_compare != null
+    (p) => p.q10_compare != null || p.q50_compare != null || p.q90_compare != null
   );
 
   const hasPriceData = priceChartData.some((p) => p.price != null);
-  const hasPriceCompare = priceChartData.some(
-    (p) => p.price_compare != null
-  );
+  const hasPriceCompare = priceChartData.some((p) => p.price_compare != null);
   const hasAnyPrice = hasPriceData || hasPriceCompare;
 
   const hasWeatherTemp = weatherChartData.some((p) => p.temp != null);
   const hasWeatherGhi = weatherChartData.some((p) => p.ghi != null);
-  const hasWeatherTempCompare = weatherChartData.some(
-    (p) => p.temp_compare != null
-  );
-  const hasWeatherGhiCompare = weatherChartData.some(
-    (p) => p.ghi_compare != null
-  );
+  const hasWeatherTempCompare = weatherChartData.some((p) => p.temp_compare != null);
+  const hasWeatherGhiCompare = weatherChartData.some((p) => p.ghi_compare != null);
   const hasAnyWeather = hasWeatherTemp || hasWeatherGhi;
-  const hasAnyWeatherCompare =
-    hasWeatherTempCompare || hasWeatherGhiCompare;
+  const hasAnyWeatherCompare = hasWeatherTempCompare || hasWeatherGhiCompare;
 
   const hasRainMm = rainChartData.some((p) => p.rain_mm != null);
   const hasRainProb = rainChartData.some((p) => p.rain_prob != null);
   const hasWind = rainChartData.some((p) => p.wind_kmh != null);
 
-  const hasRainMmCompare = rainChartData.some(
-    (p) => p.rain_mm_compare != null
-  );
-  const hasRainProbCompare = rainChartData.some(
-    (p) => p.rain_prob_compare != null
-  );
-  const hasWindCompare = rainChartData.some(
-    (p) => p.wind_kmh_compare != null
-  );
+  const hasRainMmCompare = rainChartData.some((p) => p.rain_mm_compare != null);
+  const hasRainProbCompare = rainChartData.some((p) => p.rain_prob_compare != null);
+  const hasWindCompare = rainChartData.some((p) => p.wind_kmh_compare != null);
 
   const hasAnyRainOrWind = hasRainMm || hasRainProb || hasWind;
   const hasAnyRainOrWindCompare =
@@ -408,12 +383,7 @@ export default function TiRexChartsPage() {
   );
 
   const LOAD_TOOLTIP_ORDER = ["q90", "q50", "q10", "actual"];
-  const COST_TOOLTIP_ORDER = [
-    "cost_q90",
-    "cost_q50",
-    "cost_q10",
-    "cost_actual",
-  ];
+  const COST_TOOLTIP_ORDER = ["cost_q90", "cost_q50", "cost_q10", "cost_actual"];
 
   // Farben
   const COLOR_BLUE = "#60a5fa";
@@ -424,9 +394,7 @@ export default function TiRexChartsPage() {
   const COLOR_LIGHT_BLUE = "#93c5fd";
   const COLOR_PINK = "#fb7185";
 
-  const HISTORY_STEPS = [
-    1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 23,
-  ];
+  const HISTORY_STEPS = [1, 2, 3, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 23];
 
   return (
     <div className="space-y-6">
@@ -437,9 +405,9 @@ export default function TiRexChartsPage() {
             TiRex Charts – {currentSeriesLabel}
           </h1>
           <p className="text-sm text-slate-400">
-            Live-orientierte Sicht rund um den aktuellen Zeitpunkt:
-            Last-History &amp; Forecast, Strompreis (Awattar), Kosten und Wetter
-            auf gemeinsamer Zeitachse – inklusive Prognose-Historie.
+            Live-orientierte Sicht rund um den aktuellen Zeitpunkt: Last-History
+            &amp; Forecast, Strompreis (Awattar), Kosten und Wetter auf gemeinsamer
+            Zeitachse – inklusive Prognose-Historie.
           </p>
           <p className="mt-1 text-xs text-slate-500">
             Interne Serie:{" "}
@@ -630,17 +598,11 @@ export default function TiRexChartsPage() {
                 }}
                 itemStyle={{ fontSize: 11 }}
                 itemSorter={(item) =>
-                  LOAD_TOOLTIP_ORDER.indexOf(
-                    (item?.dataKey as string) ?? "zzz"
-                  )
+                  LOAD_TOOLTIP_ORDER.indexOf((item?.dataKey as string) ?? "zzz")
                 }
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasLoadData && (
                 <>
@@ -658,7 +620,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_PINK}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                       <Line
                         type="linear"
@@ -672,7 +634,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_LIGHT_BLUE}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                       <Line
                         type="linear"
@@ -686,7 +648,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_LIGHT_GREEN}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                     </>
                   )}
@@ -698,7 +660,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_RED}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -708,7 +670,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_BLUE}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -718,7 +680,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_GREEN}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -728,7 +690,7 @@ export default function TiRexChartsPage() {
                     strokeWidth={1.8}
                     dot={{ r: 1, stroke: COLOR_BLUE, fill: COLOR_BLUE }}
                     activeDot={{ r: 5 }}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                 </>
               )}
@@ -783,17 +745,11 @@ export default function TiRexChartsPage() {
                 }}
                 itemStyle={{ fontSize: 11 }}
                 itemSorter={(item) =>
-                  COST_TOOLTIP_ORDER.indexOf(
-                    (item?.dataKey as string) ?? "zzz"
-                  )
+                  COST_TOOLTIP_ORDER.indexOf((item?.dataKey as string) ?? "zzz")
                 }
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasCostData && (
                 <>
@@ -811,7 +767,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_PINK}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                       <Line
                         type="linear"
@@ -825,7 +781,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_LIGHT_BLUE}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                       <Line
                         type="linear"
@@ -839,7 +795,7 @@ export default function TiRexChartsPage() {
                         stroke={COLOR_LIGHT_GREEN}
                         strokeWidth={1}
                         strokeDasharray="3 2"
-                        connectNulls={false}
+                        connectNulls={true}
                       />
                     </>
                   )}
@@ -851,7 +807,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_RED}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -861,7 +817,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_BLUE}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -871,7 +827,7 @@ export default function TiRexChartsPage() {
                     activeDot={{ r: 5 }}
                     stroke={COLOR_GREEN}
                     strokeWidth={1.4}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                   <Line
                     type="linear"
@@ -881,7 +837,7 @@ export default function TiRexChartsPage() {
                     strokeWidth={1.8}
                     dot={{ r: 1, stroke: COLOR_BLUE, fill: COLOR_BLUE }}
                     activeDot={{ r: 5 }}
-                    connectNulls={false}
+                    connectNulls={true}
                   />
                 </>
               )}
@@ -932,11 +888,7 @@ export default function TiRexChartsPage() {
                 }}
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasAnyPrice && (
                 <>
@@ -980,9 +932,8 @@ export default function TiRexChartsPage() {
               Temperatur (°C)
             </h2>
             <p className="text-xs text-slate-400">
-              Wetter für {WEATHER_LOCATION.name} ·{" "}
-              {WEATHER_LOCATION.lat.toFixed(2)}°N,{" "}
-              {WEATHER_LOCATION.lon.toFixed(2)}°E
+              Wetter für {WEATHER_LOCATION.name} · {WEATHER_LOCATION.lat.toFixed(2)}
+              °N, {WEATHER_LOCATION.lon.toFixed(2)}°E
             </p>
           </div>
         </div>
@@ -1023,11 +974,7 @@ export default function TiRexChartsPage() {
                 }}
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasWeatherTemp && (
                 <>
@@ -1103,11 +1050,7 @@ export default function TiRexChartsPage() {
                 }}
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasWeatherGhi && (
                 <>
@@ -1192,11 +1135,7 @@ export default function TiRexChartsPage() {
                 }}
               />
               {nowMs !== null && (
-                <ReferenceLine
-                  x={nowMs}
-                  stroke="#fbbf24"
-                  strokeDasharray="4 4"
-                />
+                <ReferenceLine x={nowMs} stroke="#fbbf24" strokeDasharray="4 4" />
               )}
               {hasAnyRainOrWind && (
                 <>

@@ -24,7 +24,7 @@ app = FastAPI(title="Ella TiRex Predictor")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # oder gezielt ["http://18.158.43.62:3000"]
+    allow_origins=["*"],  # oder gezielt ["http://192.168.178.36:3000"]
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
